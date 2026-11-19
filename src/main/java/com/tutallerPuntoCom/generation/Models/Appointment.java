@@ -1,6 +1,6 @@
 package com.tutallerPuntoCom.generation.Models;
 
-import com.tutallerPuntoCom.generation.Utils.Enums.Status;
+import com.tutallerPuntoCom.generation.Utils.Enums.AppointmentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,7 +43,7 @@ public class Appointment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status = Status.PENDIENTE;
+    private AppointmentStatus status = AppointmentStatus.PENDIENTE;
 
     @Column(nullable = false)
     private  boolean reschedule = false;
@@ -51,7 +51,5 @@ public class Appointment {
     @CreatedDate
     @Column(nullable = false,updatable = false)
     private Instant createdAt;
-
-
 
 }
