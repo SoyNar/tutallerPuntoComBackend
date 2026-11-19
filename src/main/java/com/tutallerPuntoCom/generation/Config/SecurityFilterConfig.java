@@ -25,12 +25,20 @@ public class SecurityFilterConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/workshops/**",
+                                "/api/vehicles/**",
+                                "/api/worshops-services/**",
+                                "/api/appointments/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(basic -> basic.disable())
                 .formLogin(form -> form.disable());
 
         return http.build();
-    }
-}
+    }}
