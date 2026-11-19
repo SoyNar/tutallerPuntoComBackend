@@ -45,6 +45,7 @@ public class Garage {
     @Column(precision = 9,scale = 6, nullable = false)
     private BigDecimal longitude;
 
+    @Column(columnDefinition = "TEXT")
     private  String photoUrl;
 
     @Enumerated(EnumType.STRING)
