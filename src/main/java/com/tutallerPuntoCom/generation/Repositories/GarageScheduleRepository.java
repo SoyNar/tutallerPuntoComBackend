@@ -1,4 +1,4 @@
 package com.tutallerPuntoCom.generation.Repositories;
 
-public interface GarageSchedule {
+public interface GarageScheduleRepository {
 }
