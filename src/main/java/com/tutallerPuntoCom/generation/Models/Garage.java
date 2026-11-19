@@ -5,7 +5,8 @@ import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
+
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -55,7 +56,8 @@ public class Garage {
     @Column(nullable = false)
     private GarageStatus garageStatus = GarageStatus.ACTIVO;
 
-    @CreatedDate
+    @CreationTimestamp
+    @Column(updatable = false)
     private Instant createdAt;
 
     //citas del talleer
