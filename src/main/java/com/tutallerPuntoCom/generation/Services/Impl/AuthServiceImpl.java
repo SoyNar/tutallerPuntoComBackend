@@ -1,6 +1,6 @@
 package com.tutallerPuntoCom.generation.Services.Impl;
 
-import com.tutallerPuntoCom.generation.DTos.RequestDTO.RegisterUserRequestDTo;
+import com.tutallerPuntoCom.generation.DTos.RequestDTO.RegisterUserRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.UserResponseDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsException;
 import com.tutallerPuntoCom.generation.Models.User;
@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthServiceI {
      * */
 
     @Override
-    public UserResponseDTO register(RegisterUserRequestDTo requestDTo) {
+    public UserResponseDTO register(RegisterUserRequestDTO requestDTo) {
         boolean findUser = this.userRepository.existsByEmail(requestDTo.email());
         if(!findUser){
             throw new EmailAlreadyExistsException("Usuario ya esta registrado");
