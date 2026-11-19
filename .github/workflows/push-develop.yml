@@ -1,4 +1,4 @@
-name: Aviso push a develop (frontend)
+name: Aviso push a develop (Backend)
 
 on:
   push:
@@ -56,7 +56,7 @@ jobs:
                       type: "Container",
                       style: "warning",
                       items: [
-                        { type: "TextBlock", text: "Hagan pull de la develop del FRONTEND antes de programar.", weight: "Bolder", wrap: true }
+                        { type: "TextBlock", text: "Hagan pull de la develop del Backend antes de programar.", weight: "Bolder", wrap: true }
                       ]
                     }
                   ],
