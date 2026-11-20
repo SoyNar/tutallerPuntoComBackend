@@ -3,7 +3,7 @@ package com.tutallerPuntoCom.generation.Services.Impl;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.LoginRequestDTO;
 import com.tutallerPuntoCom.generation.Security.JwtServiceI;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.RegisterUserRequestDTo;
-import com.tutallerPuntoCom.generation.DTos.ResponseDTo.AuhResponseDTO;
+import com.tutallerPuntoCom.generation.DTos.ResponseDTo.AuthResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.UserResponseDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsException;
 import com.tutallerPuntoCom.generation.Models.User;
@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthServiceI {
 
     @Transactional
     @Override
-    public AuhResponseDTO register(RegisterUserRequestDTo requestDTo) {
+    public AuthResponseDTO register(RegisterUserRequestDTo requestDTo) {
         boolean findUser = this.userRepository.existsByEmail(requestDTo.email());
         if(findUser){
             throw new EmailAlreadyExistsException("Usuario ya esta registrado");
@@ -73,11 +73,11 @@ public class AuthServiceImpl implements AuthServiceI {
         User savedUser = userRepository.save(user);
         String token = jwtServiceI.generateToken(savedUser);
 
-        return new AuhResponseDTO(token,UserResponseDTO.from(savedUser));
+        return new AuthResponseDTO(token,UserResponseDTO.from(savedUser));
     }
 
     @Override
-    public AuhResponseDTO login(LoginRequestDTO requestDTO)
+    public AuthResponseDTO login(LoginRequestDTO requestDTO)
 
     {
         Authentication authentication = authenticationManager.authenticate(
@@ -88,6 +88,6 @@ public class AuthServiceImpl implements AuthServiceI {
         );
         User user = (User) authentication.getPrincipal();
         String token = jwtServiceI.generateToken(user);
-        return new AuhResponseDTO(token, UserResponseDTO.from(user));
+        return new AuthResponseDTO(token, UserResponseDTO.from(user));
     }
 }

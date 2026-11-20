@@ -14,12 +14,28 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "appointments")
+@Table(name = "appointments",uniqueConstraints = {@UniqueConstraint(name = "uq_cita_franja_activa",columnNames = {"garage_id","date","hour","active_slot"})})
+
 public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
+
+    @Setter(lombok.AccessLevel.NONE)
+    @Column(name = "active_slot")
+    private Integer activeSlot = 1;
+
+    @PrePersist
+    @PreUpdate
+    private void syncActiveSlot() {
+        if (this.status == AppointmentStatus.PENDIENTE || this.status == AppointmentStatus.CONFIRMADA) {
+            this.activeSlot = 1;
+        } else {
+            this.activeSlot = null;
+        }
+    }
+
 
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "vehicle_id",nullable = false)

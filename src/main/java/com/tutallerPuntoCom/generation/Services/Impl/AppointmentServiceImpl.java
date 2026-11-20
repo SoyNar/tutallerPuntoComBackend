@@ -8,6 +8,7 @@ import com.tutallerPuntoCom.generation.DTos.ResponseDTo.CountResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.BusinessRuleException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.ConflictException;
+import com.tutallerPuntoCom.generation.Exceptions.Customs.ForbiddenException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import com.tutallerPuntoCom.generation.Models.Appointment;
 import com.tutallerPuntoCom.generation.Models.Garage;
@@ -30,7 +31,6 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +77,7 @@ public class AppointmentServiceImpl implements AppointmentServiceI {
         Vehicle vehicle = vehicleRepository.findById(request.vehicleId())
                 .orElseThrow(() -> new NotFoundModelException("El vehículo no existe"));
         if (!vehicle.getUser().getId().equals(userId)) {
-            throw new AccessDeniedException("El vehículo no pertenece al usuario");
+            throw new ForbiddenException("El vehículo no pertenece al usuario");
         }
 
         Garage garage = garageRepository.findById(request.garageId())
@@ -142,7 +142,7 @@ public class AppointmentServiceImpl implements AppointmentServiceI {
     public AppointmentResponseDTO reschedule(Long id, Long userId, RescheduleRequestDTO request) {
         Appointment appointment = findAppointment(id);
         if (!isOwner(appointment, userId)) {
-            throw new AccessDeniedException("No tienes permiso sobre esta cita");
+            throw new ForbiddenException("No tienes permiso sobre esta cita");
         }
         if (appointment.getStatus().isFinal()) {
             throw new ConflictException("Una cita completada o cancelada no se puede reprogramar");
@@ -248,7 +248,7 @@ public class AppointmentServiceImpl implements AppointmentServiceI {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundModelException("El usuario no existe"));
         if (user.getRole() != Roles.ADMIN) {
-            throw new AccessDeniedException("No tienes permiso sobre esta cita");
+            throw new ForbiddenException("No tienes permiso sobre esta cita");
         }
         return appointment;
     }

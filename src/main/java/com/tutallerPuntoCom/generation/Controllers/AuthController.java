@@ -2,9 +2,8 @@ package com.tutallerPuntoCom.generation.Controllers;
 
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.LoginRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.RegisterUserRequestDTo;
-import com.tutallerPuntoCom.generation.DTos.ResponseDTo.AuhResponseDTO;
+import com.tutallerPuntoCom.generation.DTos.ResponseDTo.AuthResponseDTO;
 import com.tutallerPuntoCom.generation.Services.Contracts.AuthServiceI;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +23,8 @@ public class AuthController {
      *
      * */
     @PostMapping("/register")
-    public ResponseEntity<AuhResponseDTO> register(  @Valid  @RequestBody RegisterUserRequestDTo requestDTo){
-        AuhResponseDTO responseDTO =  this.authServiceI.register(requestDTo);
+    public ResponseEntity<AuthResponseDTO> register(@Valid  @RequestBody RegisterUserRequestDTo requestDTo){
+        AuthResponseDTO responseDTO =  this.authServiceI.register(requestDTo);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
@@ -35,8 +34,8 @@ public class AuthController {
      * */
 
     @PostMapping("/login")
-    public ResponseEntity<AuhResponseDTO> login (@Valid @RequestBody LoginRequestDTO requestDTO){
-        AuhResponseDTO responseDTO = this.authServiceI.login(requestDTO);
+    public ResponseEntity<AuthResponseDTO> login (@Valid @RequestBody LoginRequestDTO requestDTO){
+        AuthResponseDTO responseDTO = this.authServiceI.login(requestDTO);
         return  ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 

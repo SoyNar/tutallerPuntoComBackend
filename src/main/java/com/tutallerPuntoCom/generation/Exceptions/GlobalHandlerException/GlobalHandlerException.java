@@ -1,6 +1,8 @@
 package com.tutallerPuntoCom.generation.Exceptions.GlobalHandlerException;
 
+import com.tutallerPuntoCom.generation.Exceptions.Customs.ConflictException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsException;
+import com.tutallerPuntoCom.generation.Exceptions.Customs.ForbiddenException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +33,6 @@ public class GlobalHandlerException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    // 1. Correo duplicado al registrarse -> 409 Conflict
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponseDTO> handleEmailAlreadyExists(EmailAlreadyExistsException ex) {
         ErrorResponseDTO response = ErrorResponseDTO.of(
@@ -41,7 +42,6 @@ public class GlobalHandlerException {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
-    // 2. Credenciales incorrectas en el login -> 401 Unauthorized
     @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
     public ResponseEntity<ErrorResponseDTO> handleBadCredentials(Exception ex) {
         ErrorResponseDTO response = ErrorResponseDTO.of(
@@ -59,6 +59,22 @@ public class GlobalHandlerException {
                 "message", ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<Map<String, Object>> handleForbidden(ForbiddenException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                "status", 403,
+                "error", "Forbidden",
+                "message", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleConflict(ConflictException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "status", 403,
+                "error", "Conflict",
+                "message", ex.getMessage()));
     }
 
 
