@@ -1,10 +1,10 @@
 package com.tutallerPuntoCom.generation.Models;
 
-import com.tutallerPuntoCom.generation.Utils.Enums.Status;
+import com.tutallerPuntoCom.generation.Utils.Enums.AppointmentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -43,15 +43,13 @@ public class Appointment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status = Status.PENDIENTE;
+    private AppointmentStatus status = AppointmentStatus.PENDIENTE;
 
     @Column(nullable = false)
     private  boolean reschedule = false;
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(nullable = false,updatable = false)
     private Instant createdAt;
-
-
 
 }

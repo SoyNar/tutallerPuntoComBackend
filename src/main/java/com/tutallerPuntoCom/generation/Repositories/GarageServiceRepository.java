@@ -3,5 +3,9 @@ package com.tutallerPuntoCom.generation.Repositories;
 import com.tutallerPuntoCom.generation.Models.GarageService;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GarageServiceRepository extends JpaRepository <GarageService, Long>{
+import java.util.Optional;
+
+public interface GarageServiceRepository extends JpaRepository<GarageService, Long> {
+
+    Optional<GarageService> findByGarageIdAndOfferServiceId(Long garageId, Long serviceId);
 }
