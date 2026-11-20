@@ -6,6 +6,7 @@ import com.tutallerPuntoCom.generation.DTos.RequestDTO.RescheduleRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.AppointmentResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.CountResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
+import com.tutallerPuntoCom.generation.Security.AuthUser;
 import com.tutallerPuntoCom.generation.Services.Contracts.AppointmentServiceI;
 import com.tutallerPuntoCom.generation.Utils.Enums.AppointmentStatus;
 import jakarta.validation.Valid;
@@ -38,45 +39,45 @@ public class AppointmentController {
 
     @PostMapping
     @PreAuthorize("hasRole('CLIENTE')")
-    public ResponseEntity<AppointmentResponseDTO> create(@AuthenticationPrincipal Long userId,
+    public ResponseEntity<AppointmentResponseDTO> create(@AuthenticationPrincipal AuthUser user,
                                                          @Valid @RequestBody AppointmentRequestDTO request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(appointmentService.create(userId, request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(appointmentService.create(user.id(), request));
     }
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<PageResponseDTO<AppointmentResponseDTO>> findMyAppointments(@AuthenticationPrincipal Long userId,
+    public ResponseEntity<PageResponseDTO<AppointmentResponseDTO>> findMyAppointments(@AuthenticationPrincipal AuthUser user,
                                                                                       @RequestParam(name = "estado", required = false) AppointmentStatus status,
                                                                                       Pageable pageable) {
-        return ResponseEntity.ok(appointmentService.findMyAppointments(userId, status, pageable));
+        return ResponseEntity.ok(appointmentService.findMyAppointments(user.id(), status, pageable));
     }
 
     @GetMapping("/me/count")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<CountResponseDTO> countMyAppointments(@AuthenticationPrincipal Long userId) {
-        return ResponseEntity.ok(appointmentService.countMyAppointments(userId));
+    public ResponseEntity<CountResponseDTO> countMyAppointments(@AuthenticationPrincipal AuthUser user) {
+        return ResponseEntity.ok(appointmentService.countMyAppointments(user.id()));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<AppointmentResponseDTO> findById(@PathVariable Long id,
-                                                           @AuthenticationPrincipal Long userId) {
-        return ResponseEntity.ok(appointmentService.findById(id, userId));
+                                                           @AuthenticationPrincipal AuthUser user) {
+        return ResponseEntity.ok(appointmentService.findById(id, user.id()));
     }
 
     @PatchMapping("/{id}/cancel")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<AppointmentResponseDTO> cancel(@PathVariable Long id,
-                                                         @AuthenticationPrincipal Long userId) {
-        return ResponseEntity.ok(appointmentService.cancel(id, userId));
+                                                         @AuthenticationPrincipal AuthUser user) {
+        return ResponseEntity.ok(appointmentService.cancel(id, user.id()));
     }
 
     @PatchMapping("/{id}/reschedule")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<AppointmentResponseDTO> reschedule(@PathVariable Long id,
-                                                             @AuthenticationPrincipal Long userId,
+                                                             @AuthenticationPrincipal AuthUser user,
                                                              @Valid @RequestBody RescheduleRequestDTO request) {
-        return ResponseEntity.ok(appointmentService.reschedule(id, userId, request));
+        return ResponseEntity.ok(appointmentService.reschedule(id, user.id(), request));
     }
 
     @PatchMapping("/{id}/status")

@@ -15,6 +15,7 @@ jobs:
           MSG: ${{ github.event.head_commit.message }}
           REPO: ${{ github.repository }}
           URL: ${{ github.event.head_commit.url }}
+          COMPARE: ${{ github.event.compare }}
         run: |
           if [ -z "$WEBHOOK" ]; then
             echo "Error: El secreto TEAMS_WEBHOOK_URL no está configurado."
@@ -25,7 +26,8 @@ jobs:
             --arg actor "$ACTOR" \
             --arg msg "$MSG" \
             --arg repo "$REPO" \
-            --arg url "$URL" '{
+            --arg url "$URL" \
+            --arg compare "$COMPARE" '{
               type: "message",
               attachments: [{
                 contentType: "application/vnd.microsoft.card.adaptive",
@@ -37,31 +39,59 @@ jobs:
                   body: [
                     {
                       type: "Container",
-                      style: "accent",
+                      style: "good",
                       bleed: true,
                       items: [
-                        { type: "TextBlock", text: "BACKEND · Nuevo push a develop", weight: "Bolder", size: "Large", wrap: true }
+                        {
+                          type: "ColumnSet",
+                          columns: [
+                            {
+                              type: "Column",
+                              width: "auto",
+                              verticalContentAlignment: "Center",
+                              items: [
+                                {
+                                  type: "Image",
+                                  url: "https://raw.githubusercontent.com/devicons/devicon/master/icons/spring/spring-original.svg",
+                                  size: "Small",
+                                  style: "Person"
+                                }
+                              ]
+                            },
+                            {
+                              type: "Column",
+                              width: "stretch",
+                              verticalContentAlignment: "Center",
+                              items: [
+                                { type: "TextBlock", text: "BACKEND · Actualización en develop", weight: "Bolder", size: "Large", color: "Good", wrap: true },
+                                { type: "TextBlock", text: ("Por " + $actor + " · " + $repo), isSubtle: true, spacing: "None", wrap: true }
+                              ]
+                            }
+                          ]
+                        }
                       ]
                     },
                     {
-                      type: "FactSet",
-                      facts: [
-                        { title: "Autor", value: $actor },
-                        { title: "Repo", value: $repo },
-                        { title: "Rama", value: "develop" },
-                        { title: "Commit", value: $msg }
+                      type: "Container",
+                      style: "emphasis",
+                      spacing: "Medium",
+                      items: [
+                        { type: "TextBlock", text: "Último commit", size: "Small", isSubtle: true, weight: "Bolder" },
+                        { type: "TextBlock", text: $msg, wrap: true, spacing: "Small" }
                       ]
                     },
                     {
                       type: "Container",
                       style: "warning",
+                      spacing: "Medium",
                       items: [
-                        { type: "TextBlock", text: "Hagan pull de la develop del Backend antes de programar.", weight: "Bolder", wrap: true }
+                        { type: "TextBlock", text: "Recuerda ejecutar git pull origin develop antes de subir cambios.", weight: "Bolder", wrap: true }
                       ]
                     }
                   ],
                   actions: [
-                    { type: "Action.OpenUrl", title: "Ver commit", url: $url }
+                    { type: "Action.OpenUrl", title: "Ver commit", url: $url },
+                    { type: "Action.OpenUrl", title: "Ver cambios (Diff)", url: $compare }
                   ]
                 }
               }]

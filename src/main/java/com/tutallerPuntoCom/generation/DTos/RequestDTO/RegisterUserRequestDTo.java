@@ -16,9 +16,9 @@ public record RegisterUserRequestDTo (
         String password,
         @NotBlank
         String address,
-        String phone,
-        @NotNull
-        VehicleRequestDto vehicle
+        String phone
+//        @NotNull
+//        VehicleRequestDto vehicle
 
 ) {
 }
