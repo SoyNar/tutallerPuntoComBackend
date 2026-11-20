@@ -1,6 +1,7 @@
 package com.tutallerPuntoCom.generation.Exceptions.GlobalHandlerException;
 
 import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsException;
+import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -48,6 +49,16 @@ public class GlobalHandlerException {
                 "Correo o contraseña incorrectos"
         );
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler(NotFoundModelException.class)
+    public ResponseEntity<Map<String, Object>> handleNotFound(NotFoundModelException ex) {
+        Map<String, Object> body = Map.of(
+                "status", 404,
+                "error", "Not Found",
+                "message", ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
 
