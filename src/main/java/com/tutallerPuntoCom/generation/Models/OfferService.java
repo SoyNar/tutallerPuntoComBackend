@@ -4,6 +4,7 @@ import com.tutallerPuntoCom.generation.Utils.Enums.CategoryServices;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigDecimal;
@@ -26,10 +27,10 @@ public class OfferService {
     @Column(nullable = false)
     private CategoryServices categoryServices;
 
-    @Column(precision = 10,scale = 6,nullable = false)
+    @Column(precision = 12, scale = 2, nullable = false)
     private BigDecimal price;
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(nullable = false)
     private Instant createdAt;
 
