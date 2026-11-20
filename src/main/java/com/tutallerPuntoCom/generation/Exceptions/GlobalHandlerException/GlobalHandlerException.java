@@ -1,7 +1,10 @@
 package com.tutallerPuntoCom.generation.Exceptions.GlobalHandlerException;
 
+import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +28,26 @@ public class GlobalHandlerException {
                 fieldErrors
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // 1. Correo duplicado al registrarse -> 409 Conflict
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleEmailAlreadyExists(EmailAlreadyExistsException ex) {
+        ErrorResponseDTO response = ErrorResponseDTO.of(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    // 2. Credenciales incorrectas en el login -> 401 Unauthorized
+    @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
+    public ResponseEntity<ErrorResponseDTO> handleBadCredentials(Exception ex) {
+        ErrorResponseDTO response = ErrorResponseDTO.of(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Correo o contraseña incorrectos"
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
 
