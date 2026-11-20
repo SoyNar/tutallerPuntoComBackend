@@ -17,4 +17,10 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body("Hola estas autenticado");
 
     }
+
+    public ResponseEntity<String> register(){
+        return ResponseEntity.status(HttpStatus.CREATED).body("usuario registrado");
+    }
+
+
 }

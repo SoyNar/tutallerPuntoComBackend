@@ -24,6 +24,10 @@ public class AuthServiceImpl implements AuthServiceI {
     /**
      * MEtodo para registrar un usuario
      * usa contraseña hash para hashear la contraseña con bycript
+     * nombre completo,apellido,direccion,correo, contrasenia, telefono, crea vehiculo,rol cliente
+     * este metodo debe decvolver un token y datos del uusuario creado:
+     * como el email,nnombre completo, correo
+     *
      * @param requestDTo
      * @return  UserResponseDTO
      * */
