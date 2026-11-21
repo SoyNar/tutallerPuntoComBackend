@@ -40,4 +40,18 @@ public record WorkshopRequestDTO(
         @NotNull(message = "El tipo de vehículo es obligatorio")
         TypeVehicle typeVehicle
 ) {
+        private static String clean(String value) {
+                return value == null ? null : value.trim();
+        }
+
+        // Constructor compato para limpiar los datos que entran
+        public WorkshopRequestDTO {
+                name = clean(name);
+                nit = clean(nit);
+                phone = clean(phone);
+                email = email == null ? null : email.trim().toLowerCase();
+                address = clean(address);
+                city = clean(city);
+        }
+
 }
