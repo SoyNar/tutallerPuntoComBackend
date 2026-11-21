@@ -29,9 +29,9 @@ public interface GarageRepository extends JpaRepository<Garage, Long> {
                    WHERE gs.garage = g AND gs.offerService.id = :serviceId))
             """)
     Page<Garage> search(
-            @Param(value = "status")GarageStatus status,
+            @Param(value = "status") GarageStatus status,
             @Param("city") String city,
-            @Param("vehicleType")TypeVehicle vehicleType,
+            @Param("vehicleType") TypeVehicle vehicleType,
             Pageable pageable
             );
 }
