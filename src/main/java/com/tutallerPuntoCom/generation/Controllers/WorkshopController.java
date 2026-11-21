@@ -41,6 +41,10 @@ public class WorkshopController {
         return  ResponseEntity.ok(garageService.findAll(city, serviceId, vehicleType, pageable));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<WorkshopResponseDTO> findById(@PathVariable Long id){
 
+        return ResponseEntity.ok(garageService.findById(id));
+    }
 
 }
