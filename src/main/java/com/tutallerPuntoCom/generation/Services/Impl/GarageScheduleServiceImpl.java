@@ -4,6 +4,7 @@ import com.tutallerPuntoCom.generation.DTos.RequestDTO.ScheduleDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.BusinessRuleException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import com.tutallerPuntoCom.generation.Models.Garage;
+import com.tutallerPuntoCom.generation.Models.GarageSchedule;
 import com.tutallerPuntoCom.generation.Repositories.GarageRepository;
 import com.tutallerPuntoCom.generation.Repositories.GarageScheduleRepository;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageScheduleServiceI;
@@ -11,10 +12,10 @@ import com.tutallerPuntoCom.generation.Utils.Enums.DAYS;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.DataFormatException;
 
 @Service
 public class GarageScheduleServiceImpl  implements GarageScheduleServiceI {
@@ -49,7 +50,6 @@ public class GarageScheduleServiceImpl  implements GarageScheduleServiceI {
         if (schedule == null){
             throw new BusinessRuleException("Se debe enviar la lista de horarios");
         }
-
         // Control de dia duplicados por medio de un Set
         Set<DAYS> seenDays = new HashSet<>();
         for (ScheduleDTO s : schedules){
@@ -67,5 +67,13 @@ public class GarageScheduleServiceImpl  implements GarageScheduleServiceI {
             }
         }
 
+    }
+
+    // Ordena los horarios por dia de la semana
+    private List<ScheduleDTO> toSortedDtos(List<GarageSchedule> schedules) {
+        return schedules.stream()
+                .sorted(Comparator.comparing(GarageSchedule::getDaysOfWeek))
+                .map(ScheduleDTO::from)
+                .toList();
     }
 }
