@@ -35,6 +35,28 @@ public class GarageScheduleServiceImpl  implements GarageScheduleServiceI {
         return toSortedDtos(scheduleRepository.findByGarageId(garageId));
     }
 
+    @Override
+    @Transactional
+    public List<ScheduleDTO> replace(Long garageId, List<ScheduleDTO> schedules){
+        Garage garage = findGarageOrThrow(garageId);
+        validate(schedules);
+
+        // Se borra y guarda el horario actual
+        scheduleRepository.deleteByGarageId(garageId);
+
+        List<GarageSchedule> entities = schedules.stream()
+                .map(dto ->{
+                    GarageSchedule schedule = new GarageSchedule();
+                    schedule.setGarage(garage);
+                    schedule.setDaysOfWeek(dto.day());
+                    schedule.setOpenAt(dto.openAt());
+                    schedule.setClosesAt(dto.closeAt());
+                    return schedule;
+                })
+                .toList();
+        return toSortedDtos(scheduleRepository.saveAll(entities));
+    }
+
 
     // Metodos de apoyo
 
@@ -45,10 +67,10 @@ public class GarageScheduleServiceImpl  implements GarageScheduleServiceI {
     }
 
     //
-    private void validate(List<ScheduleDTO> schedule){
+    private void validate(List<ScheduleDTO> schedules){
 
         // valida si los horarios estan vacios
-        if (schedule == null){
+        if (schedules == null){
             throw new BusinessRuleException("Se debe enviar la lista de horarios");
         }
         // Control de dia duplicados por medio de un Set
