@@ -1,9 +1,11 @@
 package com.tutallerPuntoCom.generation.Controllers;
 
+import com.tutallerPuntoCom.generation.DTos.RequestDTO.ScheduleDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopSummaryDTO;
+import com.tutallerPuntoCom.generation.Services.Contracts.GarageScheduleServiceI;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceI;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import jakarta.validation.Valid;
@@ -13,15 +15,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/workshops")
 public class WorkshopController {
 
     private final GarageServiceI garageService;
+    private final GarageScheduleServiceI scheduleService;
 
-    public WorkshopController(GarageServiceI garageService) {
+    public WorkshopController(GarageServiceI garageService, GarageScheduleServiceI scheduleService) {
         this.garageService = garageService;
+        this.scheduleService = scheduleService;
     }
 
     @PostMapping
@@ -45,6 +51,17 @@ public class WorkshopController {
     public ResponseEntity<WorkshopResponseDTO> findById(@PathVariable Long id){
 
         return ResponseEntity.ok(garageService.findById(id));
+    }
+
+    @GetMapping("/{id}/schedule")
+    public ResponseEntity<List<ScheduleDTO>> getSchedule(@PathVariable Long id) {
+        return ResponseEntity.ok(scheduleService.findByGarage(id));
+    }
+
+    @PutMapping("/{id}/schedule")
+    public ResponseEntity<List<ScheduleDTO>> replaceSchedule(@PathVariable Long id,
+                                                             @RequestBody List<ScheduleDTO> schedules) {
+        return ResponseEntity.ok(scheduleService.replace(id, schedules));
     }
 
 }
