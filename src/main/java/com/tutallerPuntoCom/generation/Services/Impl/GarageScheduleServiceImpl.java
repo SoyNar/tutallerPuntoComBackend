@@ -50,7 +50,7 @@ public class GarageScheduleServiceImpl  implements GarageScheduleServiceI {
                     schedule.setGarage(garage);
                     schedule.setDaysOfWeek(dto.day());
                     schedule.setOpenAt(dto.openAt());
-                    schedule.setClosesAt(dto.closeAt());
+                    schedule.setClosesAt(dto.closesAt());
                     return schedule;
                 })
                 .toList();
@@ -77,11 +77,11 @@ public class GarageScheduleServiceImpl  implements GarageScheduleServiceI {
         Set<DAYS> seenDays = new HashSet<>();
         for (ScheduleDTO s : schedules){
             // se aseguria que no haya campos vacios
-            if (s == null || s.day() == null || s.openAt() == null | s.closeAt() == null){
+            if (s == null || s.day() == null || s.openAt() == null | s.closesAt() == null){
                 throw new BusinessRuleException("Cada horario debe incluir día, hora de apertura y hora de cierre");
             }
             // Validacion de horarios
-            if (!s.openAt().isBefore(s.closeAt())){
+            if (!s.openAt().isBefore(s.closesAt())){
                 throw new BusinessRuleException("La hora de apertura debe ser menor que la hora de cierre");
             }
             // Si ya un dia repetido lanza la excepcion
