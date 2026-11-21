@@ -16,17 +16,17 @@ public record WorkshopSummaryDTO(
         String photoUrl,
         TypeVehicle typeVehicle
 ){
-    public static WorkshopSummaryDTO from(Garage garage){
+    public static WorkshopSummaryDTO from(Garage g){
         return new WorkshopSummaryDTO(
-                garage.getId(),
-                garage.getName(),
-                garage.getCity(),
-                garage.getAddress(),
-                garage.getPhone(),
-                garage.getLatitude(),
-                garage.getLongitude(),
-                garage.getPhotoUrl(),
-                garage.getTypeVehicle()
+                g.getId(),
+                g.getName(),
+                g.getCity(),
+                g.getAddress(),
+                g.getPhone(),
+                g.getLatitude(),
+                g.getLongitude(),
+                g.getPhotoUrl(),
+                g.getTypeVehicle()
         );
     }
 }
