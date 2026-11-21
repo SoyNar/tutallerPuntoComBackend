@@ -14,7 +14,7 @@ public record ScheduleDTO(
         LocalTime openAt,
 
         @NotNull(message = "La hora de cierre es obligatoria")
-        LocalTime closeAt
+        LocalTime closesAt
 ) {
     public static ScheduleDTO from(GarageSchedule schedule){
         return new ScheduleDTO(
