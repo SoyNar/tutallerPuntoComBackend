@@ -31,7 +31,8 @@ public class GarageScheduleServiceImpl  implements GarageScheduleServiceI {
     @Override
     @Transactional(readOnly = true)
     public List<ScheduleDTO> findByGarage(Long garageId){
-        return null;
+        findGarageOrThrow(garageId);
+        return toSortedDtos(scheduleRepository.findByGarageId(garageId));
     }
 
 
