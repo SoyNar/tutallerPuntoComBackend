@@ -32,6 +32,7 @@ public interface GarageRepository extends JpaRepository<Garage, Long> {
             @Param(value = "status") GarageStatus status,
             @Param("city") String city,
             @Param("vehicleType") TypeVehicle vehicleType,
+            @Param("serviceId") Long serviceId,
             Pageable pageable
             );
 }
