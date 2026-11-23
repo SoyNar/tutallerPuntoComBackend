@@ -2,11 +2,15 @@
 
 
     import com.tutallerPuntoCom.generation.DTos.RequestDTO.VehicleRequestDto;
+    import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
     import com.tutallerPuntoCom.generation.DTos.ResponseDTo.VehicleResponseDTO;
     import com.tutallerPuntoCom.generation.Security.AuthUser;
     import com.tutallerPuntoCom.generation.Services.Contracts.VehicleServiceI;
     import io.swagger.v3.oas.annotations.security.SecurityRequirement;
     import jakarta.validation.Valid;
+    import org.springdoc.core.annotations.ParameterObject;
+    import org.springframework.data.domain.Pageable;
+    import org.springframework.data.web.PageableDefault;
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
     import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +21,7 @@
 
     @RestController
     @RequestMapping("/api/vehicles")
-    @PreAuthorize("hasRole('CLIENTE')")
+    @PreAuthorize("hasRole('CLIENT')")
     @SecurityRequirement(name = "bearerAuth")
     public class VehiclesController {
 
@@ -37,10 +41,12 @@
         }
 
         @GetMapping("/me")
-        public ResponseEntity<List<VehicleResponseDTO>> getMyVehicles(
-                @AuthenticationPrincipal AuthUser user
+        @PreAuthorize("hasAnyRole('CLIENTE')")
+        public ResponseEntity<PageResponseDTO> getMyVehicles(
+                @AuthenticationPrincipal AuthUser user,
+                @ParameterObject @PageableDefault(page = 0, size = 10) Pageable pageable
         ) {
-            return ResponseEntity.ok(vehicleService.getMyVehicles(user.id()));
+            return ResponseEntity.ok(vehicleService.getMyVehicles(user.id(),pageable));
         }
 
         @GetMapping("/{id}")

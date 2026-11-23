@@ -2,10 +2,14 @@ package com.tutallerPuntoCom.generation.Controllers;
 
 
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.ServiceRequestDTO;
+import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.ServiceResponseDTO;
 import com.tutallerPuntoCom.generation.Services.Contracts.OfferServiceI;
 import com.tutallerPuntoCom.generation.Utils.Enums.CategoryServices;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,10 +28,11 @@ public class OfferServiceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ServiceResponseDTO>> getAllServices(
-            @RequestParam(name = "categoria", required = false) CategoryServices categoria
-    ) {
-        return ResponseEntity.ok(offerService.getAllServices(categoria));
+    public ResponseEntity<PageResponseDTO> getAllServices(
+            @RequestParam(name = "categoria", required = false) CategoryServices categoria,
+           @ParameterObject @PageableDefault(size = 10,sort = {"name","id"})Pageable pageable
+            ) {
+        return ResponseEntity.ok(offerService.getAllServices(categoria, pageable));
     }
 
     @GetMapping("/{id}")

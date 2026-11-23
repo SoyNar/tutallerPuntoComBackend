@@ -3,6 +3,7 @@ package com.tutallerPuntoCom.generation.Services.Impl;
 
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.ServiceRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.CategoryResponseDTO;
+import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.ServiceResponseDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.ConflictException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
@@ -10,10 +11,11 @@ import com.tutallerPuntoCom.generation.Models.OfferService;
 import com.tutallerPuntoCom.generation.Repositories.OfferServiceRepository;
 import com.tutallerPuntoCom.generation.Services.Contracts.OfferServiceI;
 import com.tutallerPuntoCom.generation.Utils.Enums.CategoryServices;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Pageable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,11 +31,12 @@ public class OfferServiceImpl implements OfferServiceI {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ServiceResponseDTO> getAllServices(CategoryServices categoria) {
-        List<OfferService> services = (categoria != null)
-                ? offerServiceRepository.findByActiveTrueAndCategoryServices(categoria)
-                : offerServiceRepository.findByActiveTrue();
-        return services.stream().map(ServiceResponseDTO::from).toList();
+    public PageResponseDTO<ServiceResponseDTO> getAllServices(CategoryServices categoria, Pageable pageable) {
+        Page<OfferService> services = (categoria != null)
+                ? offerServiceRepository.findByActiveTrueAndCategoryServices(categoria,pageable)
+                : offerServiceRepository.findByActiveTrue(pageable);
+        Page<ServiceResponseDTO> dtoPage = services.map(ServiceResponseDTO::from);
+        return  PageResponseDTO.from(dtoPage);
     }
 
     @Override
@@ -52,12 +55,8 @@ public class OfferServiceImpl implements OfferServiceI {
         service.setPrice(request.price());
         service.setActive(true);
 
-        try {
-            OfferService saved = offerServiceRepository.saveAndFlush(service);
-            return ServiceResponseDTO.from(saved);
-        } catch (DataIntegrityViolationException e) {
-            throw new ConflictException("No se pudo registrar el servicio por conflicto de datos");
-        }
+        OfferService saved = offerServiceRepository.save(service);
+        return ServiceResponseDTO.from(saved);
     }
 
     @Override
@@ -69,12 +68,8 @@ public class OfferServiceImpl implements OfferServiceI {
         service.setCategoryServices(request.categoryServices());
         service.setPrice(request.price());
 
-        try {
-            OfferService updated = offerServiceRepository.saveAndFlush(service);
-            return ServiceResponseDTO.from(updated);
-        } catch (DataIntegrityViolationException e) {
-            throw new ConflictException("No se pudo actualizar el servicio por conflicto de datos");
-        }
+        OfferService updated = offerServiceRepository.save(service);
+        return ServiceResponseDTO.from(updated);
     }
 
     @Override
@@ -83,11 +78,7 @@ public class OfferServiceImpl implements OfferServiceI {
                 .orElseThrow(() -> new NotFoundModelException("Servicio no encontrado"));
 
         service.setActive(false);
-        try {
-            offerServiceRepository.saveAndFlush(service);
-        } catch (DataIntegrityViolationException e) {
-            throw new ConflictException("No se puede eliminar el servicio porque está en uso");
-        }
+        offerServiceRepository.save(service);
     }
 
     @Override

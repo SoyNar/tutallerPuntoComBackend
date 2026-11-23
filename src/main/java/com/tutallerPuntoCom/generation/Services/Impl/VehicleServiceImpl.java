@@ -2,6 +2,7 @@ package com.tutallerPuntoCom.generation.Services.Impl;
 
 
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.VehicleRequestDto;
+import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.VehicleResponseDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.ConflictException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.ForbiddenException;
@@ -13,6 +14,8 @@ import com.tutallerPuntoCom.generation.Repositories.VehicleRepository;
 import com.tutallerPuntoCom.generation.Security.AuthUser;
 import com.tutallerPuntoCom.generation.Services.Contracts.VehicleServiceI;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,20 +50,15 @@ public class VehicleServiceImpl implements VehicleServiceI {
         vehicle.setPlate(normalizedPlate);
         vehicle.setUser(owner);
 
-        try {
             Vehicle saved = vehicleRepository.saveAndFlush(vehicle);
             return VehicleResponseDTO.from(saved);
-        } catch (DataIntegrityViolationException e) {
-            throw new ConflictException("Ya existe un vehículo registrado con esa placa");
-        }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<VehicleResponseDTO> getMyVehicles(Long userId) {
-        return vehicleRepository.findByUser_Id(userId).stream()
-                .map(VehicleResponseDTO::from)
-                .toList();
+    public PageResponseDTO<VehicleResponseDTO> getMyVehicles(Long userId, Pageable pageable) {
+       Page<Vehicle> vehicles = vehicleRepository.findByUserId(userId, pageable);
+       return  PageResponseDTO.from(vehicles.map(VehicleResponseDTO::from));
     }
 
     @Override
@@ -94,12 +92,7 @@ public class VehicleServiceImpl implements VehicleServiceI {
         vehicle.setModel(request.model().trim());
         vehicle.setPlate(normalizedPlate);
 
-        try {
-            Vehicle updated = vehicleRepository.saveAndFlush(vehicle);
-            return VehicleResponseDTO.from(updated);
-        } catch (DataIntegrityViolationException e) {
-            throw new ConflictException("Ya existe un vehículo registrado con esa placa");
-        }
+        return VehicleResponseDTO.from(vehicleRepository.saveAndFlush(vehicle));
     }
 
     @Override
