@@ -1,8 +1,12 @@
 package com.tutallerPuntoCom.generation.DTos.RequestDTO;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
+
 
 public record RegisterUserRequestDTo (
         @NotBlank
@@ -16,9 +20,9 @@ public record RegisterUserRequestDTo (
         String password,
         @NotBlank
         String address,
-        String phone
-//        @NotNull
-//        VehicleRequestDto vehicle
-
+        String phone,
+        @Valid
+        @NotNull
+        List<VehicleRequestDto> vehicles
 ) {
 }

@@ -3,6 +3,7 @@ package com.tutallerPuntoCom.generation.Controllers;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.LoginRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.RegisterUserRequestDTo;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.AuthResponseDTO;
+import com.tutallerPuntoCom.generation.DTos.ResponseDTo.RegisterResponseDTO;
 import com.tutallerPuntoCom.generation.Services.Contracts.AuthServiceI;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,8 +24,8 @@ public class AuthController {
      *
      * */
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDTO> register(@Valid  @RequestBody RegisterUserRequestDTo requestDTo){
-        AuthResponseDTO responseDTO =  this.authServiceI.register(requestDTo);
+    public ResponseEntity<RegisterResponseDTO> register(@Valid  @RequestBody RegisterUserRequestDTo requestDTo){
+        RegisterResponseDTO responseDTO =  this.authServiceI.register(requestDTo);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
