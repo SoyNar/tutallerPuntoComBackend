@@ -2,6 +2,7 @@ package com.tutallerPuntoCom.generation.Repositories;
 
 import com.tutallerPuntoCom.generation.Models.GarageService;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,4 +21,9 @@ public interface GarageServiceRepository extends JpaRepository<GarageService, Lo
             ORDER BY s.name
             """)
     List<GarageService> findByGarageIdWithService(@Param("garageId") Long garageId);
+
+    // Borrado masivo para los servicios de un taller
+    @Modifying
+    @Query("DELETE FROM GarageService gs WHERE gs.garage.id = :garageId")
+    void deleteByGarageId(@Param("garageId") Long garageId);
 }
