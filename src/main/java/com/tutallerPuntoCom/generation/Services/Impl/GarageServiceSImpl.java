@@ -9,8 +9,10 @@ import com.tutallerPuntoCom.generation.Repositories.GarageRepository;
 import com.tutallerPuntoCom.generation.Repositories.GarageServiceRepository;
 import com.tutallerPuntoCom.generation.Repositories.OfferServiceRepository;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceSI;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class GarageServiceSImpl implements GarageServiceSI {
 
@@ -25,6 +27,16 @@ public class GarageServiceSImpl implements GarageServiceSI {
     }
 
     // Metodos
+    //Consulta y devuelve todos los servicios de un taller
+    @Override
+    @Transactional(readOnly = true)
+    public List<ServiceResponseDTO> findByGarage(Long garageId) {
+        findGarage(garageId);
+        return garageServiceRepository.findByGarageIdWithService(garageId).stream()
+                .map(this::toDto)
+                .toList();
+    }
+
 
     // Metodos privados
 
