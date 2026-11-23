@@ -1,10 +1,9 @@
 package com.tutallerPuntoCom.generation.DTos.RequestDTO;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record RegisterUserRequestDTo (
+public record RegisterUserRequestDTo(
         @NotBlank
         String name,
         @NotBlank
