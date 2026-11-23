@@ -77,7 +77,7 @@ public class GarageScheduleServiceImpl  implements GarageScheduleServiceI {
         Set<DAYS> seenDays = new HashSet<>();
         for (ScheduleDTO s : schedules){
             // se aseguria que no haya campos vacios
-            if (s == null || s.day() == null || s.openAt() == null | s.closesAt() == null){
+            if (s == null || s.day() == null || s.openAt() == null || s.closesAt() == null){
                 throw new BusinessRuleException("Cada horario debe incluir día, hora de apertura y hora de cierre");
             }
             // Validacion de horarios
