@@ -1,6 +1,8 @@
 package com.tutallerPuntoCom.generation.Exceptions.GlobalHandlerException;
 
 import com.tutallerPuntoCom.generation.Exceptions.Customs.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalHandlerException {
 
@@ -123,6 +126,13 @@ public class GlobalHandlerException {
                 "No se pudo completar la operación por conflicto o relación con otros registros"
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<Map<String, String>> handleDataAccess(DataAccessException ex) {
+        log.error("Error de base de datos", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "Error interno al procesar la solicitud"));
     }
 
 
