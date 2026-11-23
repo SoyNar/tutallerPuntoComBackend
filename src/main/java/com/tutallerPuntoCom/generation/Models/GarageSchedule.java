@@ -1,11 +1,13 @@
 package com.tutallerPuntoCom.generation.Models;
-
-
 import com.tutallerPuntoCom.generation.Utils.Enums.DAYS;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "garage_schedule")
 public class GarageSchedule {
@@ -21,8 +23,9 @@ public class GarageSchedule {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DAYS daysOfWeek;
-
-    private LocalDate openAt;
-    private  LocalDate closesAt;
+   @Column(nullable = false)
+    private LocalTime openAt;
+    @Column(nullable = false)
+    private  LocalTime closesAt;
 
 }

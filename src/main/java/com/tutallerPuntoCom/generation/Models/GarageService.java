@@ -15,9 +15,11 @@ public class GarageService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "garage_id",nullable = false)
     private Garage garage;
+
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "service_id",nullable = false)
     private OfferService offerService;
