@@ -13,7 +13,7 @@ public class Vehicle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -23,14 +23,12 @@ public class Vehicle {
     private String brand;
 
     @Column(nullable = false)
-    private  String model;
+    private String model;
 
-    @Column(nullable = false)
-    private  String plate;
+    @Column(nullable = false, unique = true)
+    private String plate;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "user_id",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-
 }
