@@ -15,4 +15,5 @@ public interface VehicleServiceI {
     VehicleResponseDTO getVehicleById(Long id, AuthUser user);
     VehicleResponseDTO updateVehicle(Long id, VehicleRequestDto request, Long userId);
     void deleteVehicle(Long id, Long userId);
-}
+     List<VehicleResponseDTO> createVehicles(List<VehicleRequestDto> requests, Long userId);
+    }

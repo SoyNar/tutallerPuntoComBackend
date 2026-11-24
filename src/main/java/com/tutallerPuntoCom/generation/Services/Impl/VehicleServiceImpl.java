@@ -4,6 +4,7 @@ package com.tutallerPuntoCom.generation.Services.Impl;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.VehicleRequestDto;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.VehicleResponseDTO;
+import com.tutallerPuntoCom.generation.Exceptions.Customs.BadRequestException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.ConflictException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.ForbiddenException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
@@ -22,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 public class VehicleServiceImpl implements VehicleServiceI {
 
     private final VehicleRepository vehicleRepository;
@@ -114,5 +114,40 @@ public class VehicleServiceImpl implements VehicleServiceI {
             throw new ForbiddenException("No tienes permiso para acceder a este vehículo");
         }
         return vehicle;
+    }
+
+
+    @Override
+    @Transactional
+    public List<VehicleResponseDTO> createVehicles(List<VehicleRequestDto> requests, Long userId) {
+        List<String> placas = requests.stream()
+                .map(r -> r.plate().trim().toUpperCase())
+                .toList();
+
+        if (placas.stream().distinct().count() != placas.size()) {
+            throw new ConflictException("Hay placas repetidas en la lista");
+        }
+
+        if (vehicleRepository.existsByPlateIn(placas)) {
+            throw new ConflictException("Una o más placas ya están registradas");
+        }
+
+        User owner = userRepository.getReferenceById(userId);
+
+        List<Vehicle> vehiculos = requests.stream()
+                .map(r -> {
+                    Vehicle v = new Vehicle();
+                    v.setTypeVehicle(r.typeVehicle());
+                    v.setBrand(r.brand());
+                    v.setModel(r.model());
+                    v.setPlate(r.plate().trim().toUpperCase());
+                    v.setUser(owner);
+                    return v;
+                })
+                .toList();
+
+        return vehicleRepository.saveAll(vehiculos).stream()
+                .map(VehicleResponseDTO::from)
+                .toList();
     }
 }
