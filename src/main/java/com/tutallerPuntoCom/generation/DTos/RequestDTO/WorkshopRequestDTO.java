@@ -1,8 +1,11 @@
 package com.tutallerPuntoCom.generation.DTos.RequestDTO;
 
+import com.tutallerPuntoCom.generation.Utils.Enums.GarageStatus;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 public record WorkshopRequestDTO(
         @NotBlank(message = "El nombre del taller es obligatorio")
@@ -26,24 +29,32 @@ public record WorkshopRequestDTO(
         String city,
 
         @NotNull(message = "La latitud es obligatoria")
-        @DecimalMin(value = "-90.0", message = "La latitud debe estar entre -90 y 90")
-        @DecimalMax(value = "90.0", message = "La latitud debe estar entre -90 y 90")
+        @DecimalMin(value = "6.08", message = "La ubicación debe estar dentro del Valle de Aburrá")
+        @DecimalMax(value = "6.45", message = "La ubicación debe estar dentro del Valle de Aburrá")
         BigDecimal latitude,
 
         @NotNull(message = "La longitud es obligatoria")
-        @DecimalMin(value = "-180.0", message = "La longitud debe estar entre -180 y 180")
-        @DecimalMax(value = "180.0", message = "La longitud debe estar entre -180 y 180")
+        @DecimalMin(value = "-75.72", message = "La ubicación debe estar dentro del Valle de Aburrá")
+        @DecimalMax(value = "-75.42", message = "La ubicación debe estar dentro del Valle de Aburrá")
         BigDecimal longitude,
 
         String photoUrl,
 
         @NotNull(message = "El tipo de vehículo es obligatorio")
-        TypeVehicle typeVehicle
-) {
-        private static String clean(String value) {
-                return value == null ? null : value.trim();
-        }
+        TypeVehicle typeVehicle,
 
+        @NotNull(message = "El estado es obligatorio")
+        GarageStatus garageStatus,
+
+        @NotEmpty(message = "Debes indicar al menos un día de atención")
+        @Valid
+        List<ScheduleDTO> schedule,
+
+        @NotEmpty(message = "Debes asignar al menos un servicio")
+        @Valid
+        List<WorkshopServicesRequestDTO.Item> services
+
+) {
         // Constructor compato para limpiar los datos que entran
         public WorkshopRequestDTO {
                 name = clean(name);
@@ -52,6 +63,10 @@ public record WorkshopRequestDTO(
                 email = email == null ? null : email.trim().toLowerCase();
                 address = clean(address);
                 city = clean(city);
+        }
+
+        private static String clean(String value) {
+                return value == null ? null : value.trim();
         }
 
 }
