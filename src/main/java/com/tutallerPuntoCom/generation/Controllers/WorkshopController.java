@@ -3,6 +3,7 @@ package com.tutallerPuntoCom.generation.Controllers;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.ScheduleDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopServicesRequestDTO;
+import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopStatusRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.ServiceResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopResponseDTO;
@@ -15,10 +16,17 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -36,13 +44,6 @@ public class WorkshopController {
         this.garageService = garageService;
         this.scheduleService = scheduleService;
         this.garageServicesService = garageServicesService;
-    }
-
-    @PostMapping
-    public ResponseEntity<WorkshopResponseDTO> create(
-            @Valid @RequestBody WorkshopRequestDTO request) {
-        WorkshopResponseDTO response = garageService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
@@ -65,15 +66,27 @@ public class WorkshopController {
         return ResponseEntity.ok(scheduleService.findByGarage(id));
     }
 
+    @GetMapping("/{id}/services")
+    public ResponseEntity<List<ServiceResponseDTO>> getServices(@PathVariable Long id) {
+        return ResponseEntity.ok(garageServicesService.findByGarage(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<WorkshopResponseDTO> create(@Valid @RequestBody WorkshopRequestDTO request) {
+        WorkshopResponseDTO response = garageService.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<WorkshopResponseDTO> update(@PathVariable Long id,
+                                                      @Valid @RequestBody WorkshopRequestDTO request) {
+        return ResponseEntity.ok(garageService.update(id, request));
+    }
+
     @PutMapping("/{id}/schedule")
     public ResponseEntity<List<ScheduleDTO>> replaceSchedule(@PathVariable Long id,
                                                              @RequestBody List<ScheduleDTO> schedules) {
         return ResponseEntity.ok(scheduleService.replace(id, schedules));
-    }
-
-    @GetMapping("/{id}/services")
-    public ResponseEntity<List<ServiceResponseDTO>> getServices(@PathVariable Long id) {
-        return ResponseEntity.ok(garageServicesService.findByGarage(id));
     }
 
     @PutMapping("/{id}/services")
@@ -81,5 +94,17 @@ public class WorkshopController {
             @PathVariable Long id,
             @Valid @RequestBody WorkshopServicesRequestDTO request) {
         return ResponseEntity.ok(garageServicesService.replace(id, request));
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<WorkshopResponseDTO> changeStatus(@PathVariable Long id,
+                                                            @Valid @RequestBody WorkshopStatusRequestDTO request) {
+        return ResponseEntity.ok(garageService.changeStatus(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        garageService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

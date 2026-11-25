@@ -1,6 +1,9 @@
 package com.tutallerPuntoCom.generation.Services.Impl;
 
+import com.tutallerPuntoCom.generation.DTos.RequestDTO.ScheduleDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopRequestDTO;
+import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopServicesRequestDTO;
+import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopStatusRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.ServiceResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopResponseDTO;
@@ -8,17 +11,16 @@ import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopSummaryDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import com.tutallerPuntoCom.generation.Models.Garage;
-import com.tutallerPuntoCom.generation.Models.OfferService;
 import com.tutallerPuntoCom.generation.Repositories.GarageRepository;
+import com.tutallerPuntoCom.generation.Services.Contracts.GarageScheduleServiceI;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceI;
-import com.tutallerPuntoCom.generation.Services.Contracts.OfferServiceI;
+import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceSI;
 import com.tutallerPuntoCom.generation.Utils.Enums.GarageStatus;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,38 +28,36 @@ import java.util.List;
 public class GarageServiceImpl implements GarageServiceI {
 
     private final GarageRepository garageRepository;
-    private  final OfferServiceI offerServiceI;
+    private final GarageScheduleServiceI scheduleService;
+    private final GarageServiceSI garageServicesService;
 
     // Constructor
-    public GarageServiceImpl(GarageRepository garageRepository,OfferServiceI offerServiceI) {
+    public GarageServiceImpl(GarageRepository garageRepository, GarageScheduleServiceI scheduleService,
+                             GarageServiceSI garageServicesService) {
         this.garageRepository = garageRepository;
-        this.offerServiceI = offerServiceI;
+        this.scheduleService = scheduleService;
+        this.garageServicesService = garageServicesService;
     }
 
     // Crea un nuevo taller en la BD
     @Override
+    @Transactional
     public WorkshopResponseDTO create(WorkshopRequestDTO request){
         if (garageRepository.existsByEmail(request.email())){
             throw new EmailAlreadyExistsException("Ya existe un taller registrado con ese correo");
         }
 
-
         Garage garage = new Garage();
-        garage.setName(request.name());
-        garage.setNit(request.nit());
-        garage.setPhone(request.phone());
-        garage.setEmail(request.email());
-        garage.setAddress(request.address());
-        garage.setCity(request.city());
-        garage.setLatitude(request.latitude());
-        garage.setLongitude(request.longitude());
-        garage.setPhotoUrl(request.photoUrl());
-        garage.setTypeVehicle(request.typeVehicle());
-        //crear servicios
-        //crear horarios
+
+        applyData(garage, request);
 
         Garage saved = garageRepository.save(garage);
-        return WorkshopResponseDTO.from(saved);
+
+        List<ScheduleDTO> schedule = scheduleService.replace(saved.getId(), request.schedule());
+        List<ServiceResponseDTO> services = garageServicesService.replace(
+                saved.getId(), new WorkshopServicesRequestDTO(request.services()));
+
+        return WorkshopResponseDTO.from(saved, schedule, services);
     }
 
 
@@ -80,12 +80,80 @@ public class GarageServiceImpl implements GarageServiceI {
         return PageResponseDTO.from(page.map(WorkshopSummaryDTO::from));
     }
 
-    // Busca y valida si existe un t    aller segun su id
+    // Busca y valida si existe un taller segun su id
     @Override
     @Transactional(readOnly = true)
     public WorkshopResponseDTO findById(Long id) {
-        Garage garage = garageRepository.findById(id)
+        return toResponse(findGarage(id));
+    }
+
+    // Actualizacion de info en una sola transaccion
+    @Override
+    @Transactional
+    public WorkshopResponseDTO update(Long id, WorkshopRequestDTO request) {
+        Garage garage = findGarage(id);
+
+        // Validacion que el correo no pertenezca a otro taller
+        if (garageRepository.existsByEmailAndIdNot(request.email(), id)){
+            throw new EmailAlreadyExistsException("Ya existe un taller registrado con ese correo");
+        }
+
+        applyData(garage, request);
+
+        List<ScheduleDTO> schedule = scheduleService.replace(id, request.schedule());
+        List<ServiceResponseDTO> services = garageServicesService.replace(
+                id, new WorkshopServicesRequestDTO(request.services()));
+
+        return WorkshopResponseDTO.from(garage, schedule, services);
+    }
+
+    // Cambiar unicamente el taller
+    @Override
+    @Transactional
+    public WorkshopResponseDTO changeStatus(Long id, WorkshopStatusRequestDTO request) {
+        Garage garage = findGarage(id);
+        garage.setGarageStatus(request.garageStatus());
+        return toResponse(garage);
+    }
+
+    // Cambia el estado del taller a SUSPENDIDO
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        Garage garage = findGarage(id);
+        garage.setGarageStatus(GarageStatus.SUSPENDIDO);
+    }
+
+    // Metodos privados
+    private Garage findGarage(Long id){
+        return garageRepository.findById(id)
                 .orElseThrow(() -> new NotFoundModelException("No existe un taller con id " + id));
-        return WorkshopResponseDTO.from(garage);
+    }
+
+    // Copiar datos del request a la entidad
+    private void applyData(Garage garage, WorkshopRequestDTO request){
+        garage.setName(request.name());
+        garage.setNit(request.nit());
+        garage.setPhone(request.phone());
+        garage.setEmail(request.email());
+        garage.setAddress(request.address());
+        garage.setCity(request.city());
+        garage.setLatitude(request.latitude());
+        garage.setLongitude(request.longitude());
+        garage.setTypeVehicle(request.typeVehicle());
+        garage.setGarageStatus(request.garageStatus());
+
+        // Remplaza la foto si la trae el request, si no la deja como esta
+        if (request.photoUrl() != null) {
+            garage.setPhotoUrl(request.photoUrl());
+        }
+    }
+
+    // Arma la respuesta completa
+    private WorkshopResponseDTO toResponse(Garage garage){
+        return WorkshopResponseDTO.from(
+                garage,
+                scheduleService.findByGarage(garage.getId()),
+                garageServicesService.findByGarage(garage.getId()));
     }
 }
