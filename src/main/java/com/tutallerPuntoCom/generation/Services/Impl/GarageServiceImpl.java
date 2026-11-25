@@ -107,9 +107,12 @@ public class GarageServiceImpl implements GarageServiceI {
         return WorkshopResponseDTO.from(garage, schedule, services);
     }
 
+    // Cambiar unicamente el taller
     @Override
     public WorkshopResponseDTO changeStatus(Long id, WorkshopStatusRequestDTO request) {
-        return null;
+        Garage garage = findGarage(id);
+        garage.setGarageStatus(request.garageStatus());
+        return toResponse(garage);
     }
 
     @Override
