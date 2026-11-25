@@ -1,0 +1,83 @@
+[
+  {
+    "id": 1,
+    "name": "Taller Don Pepe",
+    "type": "MECANICA_GENERAL",
+    "address": "Cra 50 #10-20, Medellín",
+    "image": "img/talleres/taller1.jpg",
+    "latitude": 6.2442,
+    "longitude": -75.5812,
+    "services": [
+      {
+        "id": 1,
+        "name": "Cambio de aceite",
+        "categoryServices": "MECANICA_GENERAL",
+        "price": 80000,
+        "active": true
+      },
+      {
+        "id": 2,
+        "name": "Revisión de frenos",
+        "categoryServices": "MECANICA_GENERAL",
+        "price": 120000,
+        "active": true
+      }
+    ],
+    "schedules": [
+      { "id": 1, "daysOfWeek": "MONDAY", "openAt": "08:00", "closesAt": "18:00" },
+      { "id": 2, "daysOfWeek": "TUESDAY", "openAt": "08:00", "closesAt": "18:00" },
+      { "id": 3, "daysOfWeek": "WEDNESDAY", "openAt": "08:00", "closesAt": "18:00" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Electrónica Rápida",
+    "type": "ELECTRONICA",
+    "address": "Cl 30 #45-10, Medellín",
+    "image": "img/talleres/taller2.jpg",
+    "latitude": 6.2518,
+    "longitude": -75.5636,
+    "services": [
+      {
+        "id": 3,
+        "name": "Diagnóstico eléctrico",
+        "categoryServices": "ELECTRONICA",
+        "price": 50000,
+        "active": true
+      }
+    ],
+    "schedules": [
+      { "id": 4, "daysOfWeek": "MONDAY", "openAt": "09:00", "closesAt": "17:00" },
+      { "id": 5, "daysOfWeek": "FRIDAY", "openAt": "09:00", "closesAt": "17:00" }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Latonería El Dorado",
+    "type": "LATONERIA_PINTURA",
+    "address": "Cra 65 #33-40, Medellín",
+    "image": "img/talleres/taller3.jpg",
+    "latitude": 6.2305,
+    "longitude": -75.5902,
+    "services": [
+      {
+        "id": 4,
+        "name": "Pintura por panel",
+        "categoryServices": "LATONERIA_PINTURA",
+        "price": 350000,
+        "active": true
+      },
+      {
+        "id": 5,
+        "name": "Enderezado de chasis",
+        "categoryServices": "LATONERIA_PINTURA",
+        "price": 280000,
+        "active": false
+      }
+    ],
+    "schedules": [
+      { "id": 6, "daysOfWeek": "TUESDAY", "openAt": "07:30", "closesAt": "17:30" },
+      { "id": 7, "daysOfWeek": "SATURDAY", "openAt": "08:00", "closesAt": "13:00" }
+    ]
+  }
+]
