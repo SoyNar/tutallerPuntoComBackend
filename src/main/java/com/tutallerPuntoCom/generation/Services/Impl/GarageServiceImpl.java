@@ -11,12 +11,14 @@ import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopSummaryDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import com.tutallerPuntoCom.generation.Models.Garage;
+import com.tutallerPuntoCom.generation.Models.GarageSchedule;
 import com.tutallerPuntoCom.generation.Repositories.GarageRepository;
 import com.tutallerPuntoCom.generation.Repositories.GarageScheduleRepository;
 import com.tutallerPuntoCom.generation.Repositories.GarageServiceRepository;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageScheduleServiceI;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceI;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceSI;
+import com.tutallerPuntoCom.generation.Utils.Enums.DAYS;
 import com.tutallerPuntoCom.generation.Utils.Enums.GarageStatus;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import org.springframework.data.domain.Page;
@@ -24,8 +26,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class GarageServiceImpl implements GarageServiceI {
@@ -54,15 +60,13 @@ public class GarageServiceImpl implements GarageServiceI {
     // Crea un nuevo taller en la BD
     @Override
     @Transactional
-    public WorkshopResponseDTO create(WorkshopRequestDTO request){
-        if (garageRepository.existsByEmail(request.email())){
+    public WorkshopResponseDTO create(WorkshopRequestDTO request) {
+        if (garageRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException("Ya existe un taller registrado con ese correo");
         }
 
         Garage garage = new Garage();
-
         applyData(garage, request);
-
         Garage saved = garageRepository.save(garage);
 
         List<ScheduleDTO> schedule = scheduleService.replace(saved.getId(), request.schedule());
@@ -81,15 +85,35 @@ public class GarageServiceImpl implements GarageServiceI {
             String city,
             Long serviceId,
             TypeVehicle vehicleType,
-            Pageable pageable) {
-
-        // Convierte dato a null para que el filtro lo ignore y limpia espacios en blanco
+            Pageable pageable)
+    {
         String cleanCity = (city == null || city.isBlank()) ? null : city.trim();
 
         Page<Garage> page = garageRepository.search(
                 GarageStatus.ACTIVO, cleanCity, vehicleType, serviceId, pageable);
 
-        return PageResponseDTO.from(page.map(WorkshopSummaryDTO::from));
+        // Dos consultas extra para toda la pagina: horarios y servicios
+        List<Long> ids = page.getContent().stream().map(Garage::getId).toList();
+
+        Map<Long, List<GarageSchedule>> schedulesByGarage = ids.isEmpty()
+                ? Map.of()
+                : scheduleRepository.findByGarageIdIn(ids).stream()
+                .collect(Collectors.groupingBy(s -> s.getGarage().getId()));
+
+        Map<Long, List<String>> servicesByGarage = ids.isEmpty()
+                ? Map.of()
+                : garageServiceRepository.findActiveByGarageIds(ids).stream()
+                .collect(Collectors.groupingBy(
+                        gs -> gs.getGarage().getId(),
+                        Collectors.mapping(gs -> gs.getOfferService().getName(),
+                                Collectors.toList())));
+
+        LocalDateTime now = LocalDateTime.now(ZONE);
+
+        return PageResponseDTO.from(page.map(garage -> WorkshopSummaryDTO.from(
+                garage,
+                isOpenAt(schedulesByGarage.getOrDefault(garage.getId(), List.of()), now),
+                servicesByGarage.getOrDefault(garage.getId(), List.of()))));
     }
 
     // Busca y valida si existe un taller segun su id
@@ -167,5 +191,14 @@ public class GarageServiceImpl implements GarageServiceI {
                 garage,
                 scheduleService.findByGarage(garage.getId()),
                 garageServicesService.findByGarage(garage.getId()));
+    }
+
+    private boolean isOpenAt(List<GarageSchedule> schedules, LocalDateTime now) {
+        DAYS today = DAYS.values()[now.getDayOfWeek().getValue() - 1];
+        LocalTime time = now.toLocalTime();
+        return schedules.stream().anyMatch(s ->
+                s.getDaysOfWeek() == today
+                        && !time.isBefore(s.getOpenAt())
+                        && time.isBefore(s.getClosesAt()));
     }
 }
