@@ -16,7 +16,7 @@ import java.awt.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/images/")
+@RequestMapping("/api/images")
 public class ImageController {
 
     private  final ImageStorageServiceI  imageStorageServiceI;
