@@ -1,8 +1,11 @@
 package com.tutallerPuntoCom.generation.DTos.RequestDTO;
 
+import com.tutallerPuntoCom.generation.Utils.Enums.GarageStatus;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 public record WorkshopRequestDTO(
         @NotBlank(message = "El nombre del taller es obligatorio")
@@ -38,12 +41,20 @@ public record WorkshopRequestDTO(
         String photoUrl,
 
         @NotNull(message = "El tipo de vehículo es obligatorio")
-        TypeVehicle typeVehicle
-) {
-        private static String clean(String value) {
-                return value == null ? null : value.trim();
-        }
+        TypeVehicle typeVehicle,
 
+        @NotNull(message = "El estado es obligatorio")
+        GarageStatus garageStatus,
+
+        @NotEmpty(message = "Debes indicar al menos un día de atención")
+        @Valid
+        List<ScheduleDTO> schedule,
+
+        @NotEmpty(message = "Debes asignar al menos un servicio")
+        @Valid
+        List<WorkshopServicesRequestDTO.Item> services
+
+) {
         // Constructor compato para limpiar los datos que entran
         public WorkshopRequestDTO {
                 name = clean(name);
@@ -52,6 +63,10 @@ public record WorkshopRequestDTO(
                 email = email == null ? null : email.trim().toLowerCase();
                 address = clean(address);
                 city = clean(city);
+        }
+
+        private static String clean(String value) {
+                return value == null ? null : value.trim();
         }
 
 }
