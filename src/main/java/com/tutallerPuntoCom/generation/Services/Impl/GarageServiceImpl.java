@@ -87,9 +87,24 @@ public class GarageServiceImpl implements GarageServiceI {
         return toResponse(findGarage(id));
     }
 
+    // Actualizacion de info en una sola transaccion
     @Override
+    @Transactional
     public WorkshopResponseDTO update(Long id, WorkshopRequestDTO request) {
-        return null;
+        Garage garage = findGarage(id);
+
+        // Validacion que el correo no pertenezca a otro taller
+        if (garageRepository.existsByEmailAndIdNot(request.email(), id)){
+            throw new EmailAlreadyExistsException("Ya existe un taller registrado con ese correo");
+        }
+
+        applyData(garage, request);
+
+        List<ScheduleDTO> schedule = scheduleService.replace(id, request.schedule());
+        List<ServiceResponseDTO> services = garageServicesService.replace(
+                id, new WorkshopServicesRequestDTO(request.services()));
+
+        return WorkshopResponseDTO.from(garage, schedule, services);
     }
 
     @Override
