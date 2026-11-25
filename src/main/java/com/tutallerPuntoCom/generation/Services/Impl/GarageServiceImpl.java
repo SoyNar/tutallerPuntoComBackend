@@ -115,9 +115,12 @@ public class GarageServiceImpl implements GarageServiceI {
         return toResponse(garage);
     }
 
+    // Cambia el estado del taller a SUSPENDIDO
     @Override
+    @Transactional
     public void delete(Long id) {
-
+        Garage garage = findGarage(id);
+        garage.setGarageStatus(GarageStatus.SUSPENDIDO);
     }
 
     // Metodos privados
