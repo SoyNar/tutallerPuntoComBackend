@@ -6,10 +6,11 @@ import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopSummaryDTO;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface GarageServiceI {
 
-    WorkshopResponseDTO create(WorkshopRequestDTO request);
+    WorkshopResponseDTO create(WorkshopRequestDTO request,, MultipartFile foto);
 
     // Listar y buscar con filtro de paginacion
     PageResponseDTO<WorkshopSummaryDTO> findAll(

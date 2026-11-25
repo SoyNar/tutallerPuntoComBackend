@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class GarageServiceImpl implements GarageServiceI {
@@ -22,16 +23,18 @@ public class GarageServiceImpl implements GarageServiceI {
     private final GarageRepository garageRepository;
 
     // Constructor
-    public GarageServiceImpl(GarageRepository garageRepository) {
+    public GarageServiceImpl(GarageRepository garageRepository, ImageStorageServiceI storageServiceI) {
         this.garageRepository = garageRepository;
     }
 
     // Crea un nuevo taller en la BD
     @Override
-    public WorkshopResponseDTO create(WorkshopRequestDTO request){
+    public WorkshopResponseDTO create(WorkshopRequestDTO request, MultipartFile foto){
         if (garageRepository.existsByEmail(request.email())){
             throw new EmailAlreadyExistsException("Ya existe un taller registrado con ese correo");
         }
+
+
 
         Garage garage = new Garage();
         garage.setName(request.name());
@@ -69,7 +72,7 @@ public class GarageServiceImpl implements GarageServiceI {
         return PageResponseDTO.from(page.map(WorkshopSummaryDTO::from));
     }
 
-    // Busca y valida si existe un taller segun su id
+    // Busca y valida si existe un t    aller segun su id
     @Override
     @Transactional(readOnly = true)
     public WorkshopResponseDTO findById(Long id) {
