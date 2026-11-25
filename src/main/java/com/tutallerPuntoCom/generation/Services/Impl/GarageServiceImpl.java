@@ -118,8 +118,26 @@ public class GarageServiceImpl implements GarageServiceI {
 
     // Metodos privados
     private Garage findGarage(Long id){
-
         return garageRepository.findById(id)
                 .orElseThrow(() -> new NotFoundModelException("No existe un taller con id " + id));
+    }
+
+    // Copiar datos del request a la entidad
+    private void applyData(Garage garage, WorkshopRequestDTO request){
+        garage.setName(request.name());
+        garage.setNit(request.nit());
+        garage.setPhone(request.phone());
+        garage.setEmail(request.email());
+        garage.setAddress(request.address());
+        garage.setCity(request.city());
+        garage.setLatitude(request.latitude());
+        garage.setLongitude(request.longitude());
+        garage.setTypeVehicle(request.typeVehicle());
+        garage.setGarageStatus(request.garageStatus());
+
+        // Remplaza la foto si la trae el request, si no la deja como esta
+        if (request.photoUrl() != null) {
+            garage.setPhotoUrl(request.photoUrl());
+        }
     }
 }
