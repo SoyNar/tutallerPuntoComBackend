@@ -12,6 +12,8 @@ import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsExce
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import com.tutallerPuntoCom.generation.Models.Garage;
 import com.tutallerPuntoCom.generation.Repositories.GarageRepository;
+import com.tutallerPuntoCom.generation.Repositories.GarageScheduleRepository;
+import com.tutallerPuntoCom.generation.Repositories.GarageServiceRepository;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageScheduleServiceI;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceI;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceSI;
@@ -22,22 +24,32 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
 public class GarageServiceImpl implements GarageServiceI {
 
+    private static final ZoneId ZONE = ZoneId.of("America/Bogota");
+
     private final GarageRepository garageRepository;
+    private final GarageScheduleRepository scheduleRepository;
+    private final GarageServiceRepository garageServiceRepository;
     private final GarageScheduleServiceI scheduleService;
     private final GarageServiceSI garageServicesService;
 
-    // Constructor
-    public GarageServiceImpl(GarageRepository garageRepository, GarageScheduleServiceI scheduleService,
+    public GarageServiceImpl(GarageRepository garageRepository,
+                             GarageScheduleRepository scheduleRepository,
+                             GarageServiceRepository garageServiceRepository,
+                             GarageScheduleServiceI scheduleService,
                              GarageServiceSI garageServicesService) {
         this.garageRepository = garageRepository;
+        this.scheduleRepository = scheduleRepository;
+        this.garageServiceRepository = garageServiceRepository;
         this.scheduleService = scheduleService;
         this.garageServicesService = garageServicesService;
     }
+
 
     // Crea un nuevo taller en la BD
     @Override
