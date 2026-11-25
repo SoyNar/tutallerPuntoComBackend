@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface GarageServiceI {
 
-    WorkshopResponseDTO create(WorkshopRequestDTO request,, MultipartFile foto);
+    WorkshopResponseDTO create(WorkshopRequestDTO request);
 
     // Listar y buscar con filtro de paginacion
     PageResponseDTO<WorkshopSummaryDTO> findAll(
@@ -21,4 +21,6 @@ public interface GarageServiceI {
 
     // Consultar por su ID
     WorkshopResponseDTO  findById(Long id);
+
+
 }

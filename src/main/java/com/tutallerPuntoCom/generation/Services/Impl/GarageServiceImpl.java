@@ -2,13 +2,16 @@ package com.tutallerPuntoCom.generation.Services.Impl;
 
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
+import com.tutallerPuntoCom.generation.DTos.ResponseDTo.ServiceResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopSummaryDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import com.tutallerPuntoCom.generation.Models.Garage;
+import com.tutallerPuntoCom.generation.Models.OfferService;
 import com.tutallerPuntoCom.generation.Repositories.GarageRepository;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceI;
+import com.tutallerPuntoCom.generation.Services.Contracts.OfferServiceI;
 import com.tutallerPuntoCom.generation.Utils.Enums.GarageStatus;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import org.springframework.data.domain.Page;
@@ -17,23 +20,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 public class GarageServiceImpl implements GarageServiceI {
 
     private final GarageRepository garageRepository;
+    private  final OfferServiceI offerServiceI;
 
     // Constructor
-    public GarageServiceImpl(GarageRepository garageRepository, ImageStorageServiceI storageServiceI) {
+    public GarageServiceImpl(GarageRepository garageRepository,OfferServiceI offerServiceI) {
         this.garageRepository = garageRepository;
+        this.offerServiceI = offerServiceI;
     }
 
     // Crea un nuevo taller en la BD
     @Override
-    public WorkshopResponseDTO create(WorkshopRequestDTO request, MultipartFile foto){
+    public WorkshopResponseDTO create(WorkshopRequestDTO request){
         if (garageRepository.existsByEmail(request.email())){
             throw new EmailAlreadyExistsException("Ya existe un taller registrado con ese correo");
         }
-
 
 
         Garage garage = new Garage();
@@ -47,6 +53,8 @@ public class GarageServiceImpl implements GarageServiceI {
         garage.setLongitude(request.longitude());
         garage.setPhotoUrl(request.photoUrl());
         garage.setTypeVehicle(request.typeVehicle());
+        //crear servicios
+        //crear horarios
 
         Garage saved = garageRepository.save(garage);
         return WorkshopResponseDTO.from(saved);

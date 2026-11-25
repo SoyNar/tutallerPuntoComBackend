@@ -9,6 +9,7 @@ public interface GarageScheduleServiceI {
     // Lista de horarios de un taller
     List<ScheduleDTO> findByGarage(Long garageId);
 
+
     // Editar horarios de un taller
     List<ScheduleDTO> replace(Long garageId, List<ScheduleDTO> schedules);
 }
