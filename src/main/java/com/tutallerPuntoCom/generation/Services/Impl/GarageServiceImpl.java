@@ -140,4 +140,12 @@ public class GarageServiceImpl implements GarageServiceI {
             garage.setPhotoUrl(request.photoUrl());
         }
     }
+
+    // Arma la respuesta completa
+    private WorkshopResponseDTO toResponse(Garage garage){
+        return WorkshopResponseDTO.from(
+                garage,
+                scheduleService.findByGarage(garage.getId()),
+                garageServicesService.findByGarage(garage.getId()));
+    }
 }
