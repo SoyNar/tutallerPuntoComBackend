@@ -93,6 +93,10 @@ public class GarageServiceImpl implements GarageServiceI {
     public WorkshopResponseDTO findById(Long id) {
         Garage garage = garageRepository.findById(id)
                 .orElseThrow(() -> new NotFoundModelException("No existe un taller con id " + id));
-        return WorkshopResponseDTO.from(garage);
+
+        return WorkshopResponseDTO.from(
+                garage,
+                scheduleService.findByGarage(id),
+                garageServicesService.findByGarage(id));
     }
 }
