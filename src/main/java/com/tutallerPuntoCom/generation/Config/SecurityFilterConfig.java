@@ -60,7 +60,7 @@ public class SecurityFilterConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/workshops/**", "/api/worshops-services/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/workshops/**", "/api/worshops-services/**","/api/garages/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

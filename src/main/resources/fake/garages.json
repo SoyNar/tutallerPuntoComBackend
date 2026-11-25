@@ -1,0 +1,161 @@
+[
+  {
+    "id": 1,
+    "name": "Taller Don Pepe",
+    "nit": "900111111-1",
+    "phone": "3001111111",
+    "email": "donpepe@tutaller.com",
+    "address": "Cra 50 #10-20",
+    "city": "Medellín",
+    "latitude": 6.2442,
+    "longitude": -75.5812,
+    "photoUrl": "img/talleres/taller1.jpg",
+    "typeVehicle": "CARRO",
+    "garageStatus": "ACTIVO",
+    "createdAt": "2026-11-01T10:00:00Z",
+    "services": [
+      { "id": 1, "name": "Cambio de aceite", "categoryServices": "MECANICA_GENERAL", "price": 80000, "active": true },
+      { "id": 2, "name": "Revisión de frenos", "categoryServices": "MECANICA_GENERAL", "price": 120000, "active": true }
+    ],
+    "schedules": [
+      { "id": 1, "daysOfWeek": "LUNES", "openAt": "08:00", "closesAt": "18:00" },
+      { "id": 2, "daysOfWeek": "MARTES", "openAt": "08:00", "closesAt": "18:00" },
+      { "id": 3, "daysOfWeek": "MIERCOLES", "openAt": "08:00", "closesAt": "18:00" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Electrónica Rápida",
+    "nit": "900222222-2",
+    "phone": "3002222222",
+    "email": "electronica@tutaller.com",
+    "address": "Cl 30 #45-10",
+    "city": "Medellín",
+    "latitude": 6.2518,
+    "longitude": -75.5636,
+    "photoUrl": "img/talleres/taller2.jpg",
+    "typeVehicle": "CARRO",
+    "garageStatus": "ACTIVO",
+    "services": [
+      { "id": 3, "name": "Diagnóstico eléctrico", "categoryServices": "ELECTRONICA", "price": 50000, "active": true }
+    ],
+    "schedules": [
+      { "id": 4, "daysOfWeek": "LUNES", "openAt": "09:00", "closesAt": "17:00" },
+      { "id": 5, "daysOfWeek": "VIERNES", "openAt": "09:00", "closesAt": "17:00" }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Latonería El Dorado",
+    "nit": "900333333-3",
+    "phone": "3003333333",
+    "email": "eldorado@tutaller.com",
+    "address": "Cra 65 #33-40",
+    "city": "Medellín",
+    "latitude": 6.2305,
+    "longitude": -75.5902,
+    "photoUrl": "img/talleres/taller3.jpg",
+    "typeVehicle": "CARRO",
+    "garageStatus": "PENDIENTE",
+    "services": [
+      { "id": 4, "name": "Pintura por panel", "categoryServices": "LATONERIA_PINTURA", "price": 350000, "active": true },
+      { "id": 5, "name": "Enderezado de chasis", "categoryServices": "LATONERIA_PINTURA", "price": 280000, "active": false }
+    ],
+    "schedules": [
+      { "id": 6, "daysOfWeek": "MARTES", "openAt": "07:30", "closesAt": "17:30" },
+      { "id": 7, "daysOfWeek": "SABADO", "openAt": "08:00", "closesAt": "13:00" }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Frenos y Suspensión Medellín",
+    "nit": "900444444-4",
+    "phone": "3004444444",
+    "email": "frenos@tutaller.com",
+    "address": "Cl 10 #43-28",
+    "city": "Medellín",
+    "latitude": 6.2476,
+    "longitude": -75.5658,
+    "photoUrl": "img/talleres/taller4.jpg",
+    "typeVehicle": "CARRO",
+    "garageStatus": "ACTIVO",
+    "services": [
+      { "id": 6, "name": "Alineación y balanceo", "categoryServices": "MECANICA_GENERAL", "price": 90000, "active": true },
+      { "id": 7, "name": "Cambio de amortiguadores", "categoryServices": "MECANICA_GENERAL", "price": 320000, "active": true }
+    ],
+    "schedules": [
+      { "id": 8, "daysOfWeek": "LUNES", "openAt": "07:00", "closesAt": "19:00" },
+      { "id": 9, "daysOfWeek": "MARTES", "openAt": "07:00", "closesAt": "19:00" },
+      { "id": 10, "daysOfWeek": "MIERCOLES", "openAt": "07:00", "closesAt": "19:00" },
+      { "id": 11, "daysOfWeek": "JUEVES", "openAt": "07:00", "closesAt": "19:00" },
+      { "id": 12, "daysOfWeek": "VIERNES", "openAt": "07:00", "closesAt": "19:00" }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "TecnoCar Electrónica",
+    "nit": "900555555-5",
+    "phone": "3005555555",
+    "email": "tecnocar@tutaller.com",
+    "address": "Cra 70 #52-15",
+    "city": "Medellín",
+    "latitude": 6.2569,
+    "longitude": -75.5874,
+    "photoUrl": "img/talleres/taller5.jpg",
+    "typeVehicle": "CARRO",
+    "garageStatus": "ACTIVO",
+    "services": [
+      { "id": 8, "name": "Reparación de módulo ECU", "categoryServices": "ELECTRONICA", "price": 280000, "active": true },
+      { "id": 9, "name": "Instalación de alarma", "categoryServices": "ELECTRONICA", "price": 150000, "active": true }
+    ],
+    "schedules": [
+      { "id": 13, "daysOfWeek": "LUNES", "openAt": "09:00", "closesAt": "18:00" },
+      { "id": 14, "daysOfWeek": "MIERCOLES", "openAt": "09:00", "closesAt": "18:00" },
+      { "id": 15, "daysOfWeek": "SABADO", "openAt": "09:00", "closesAt": "14:00" }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Pintura Express Laureles",
+    "nit": "900666666-6",
+    "phone": "3006666666",
+    "email": "pintura@tutaller.com",
+    "address": "Cl 33 #74-20, Laureles",
+    "city": "Medellín",
+    "latitude": 6.2456,
+    "longitude": -75.5935,
+    "photoUrl": "img/talleres/taller6.jpg",
+    "typeVehicle": "CARRO",
+    "garageStatus": "SUSPENDIDO",
+    "services": [
+      { "id": 10, "name": "Pulido de carrocería", "categoryServices": "LATONERIA_PINTURA", "price": 180000, "active": true }
+    ],
+    "schedules": [
+      { "id": 16, "daysOfWeek": "MARTES", "openAt": "08:00", "closesAt": "17:00" },
+      { "id": 17, "daysOfWeek": "JUEVES", "openAt": "08:00", "closesAt": "17:00" }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Mecánica del Sur",
+    "nit": "900777777-7",
+    "phone": "3007777777",
+    "email": "mecanicasur@tutaller.com",
+    "address": "Cra 43A #8-35, El Poblado",
+    "city": "Medellín",
+    "latitude": 6.2088,
+    "longitude": -75.5681,
+    "photoUrl": "img/talleres/taller7.jpg",
+    "typeVehicle": "MOTO",
+    "garageStatus": "PENDIENTE",
+    "services": [
+      { "id": 11, "name": "Instalación de accesorios", "categoryServices": "EQUIPAMENTO_VEHICULO", "price": 120000, "active": true },
+      { "id": 12, "name": "Polarizado de vidrios", "categoryServices": "EQUIPAMENTO_VEHICULO", "price": 200000, "active": false }
+    ],
+    "schedules": [
+      { "id": 18, "daysOfWeek": "LUNES", "openAt": "08:30", "closesAt": "18:30" },
+      { "id": 19, "daysOfWeek": "VIERNES", "openAt": "08:30", "closesAt": "18:30" },
+      { "id": 20, "daysOfWeek": "SABADO", "openAt": "09:00", "closesAt": "13:00" }
+    ]
+  }
+]
