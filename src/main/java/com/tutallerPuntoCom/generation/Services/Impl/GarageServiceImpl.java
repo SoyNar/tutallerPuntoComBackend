@@ -3,6 +3,7 @@ package com.tutallerPuntoCom.generation.Services.Impl;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.ScheduleDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopServicesRequestDTO;
+import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopStatusRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.ServiceResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopResponseDTO;
@@ -98,5 +99,27 @@ public class GarageServiceImpl implements GarageServiceI {
                 garage,
                 scheduleService.findByGarage(id),
                 garageServicesService.findByGarage(id));
+    }
+
+    @Override
+    public WorkshopResponseDTO update(Long id, WorkshopRequestDTO request) {
+        return null;
+    }
+
+    @Override
+    public WorkshopResponseDTO changeStatus(Long id, WorkshopStatusRequestDTO request) {
+        return null;
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
+
+    // Metodos privados
+    private Garage findGarage(Long id){
+
+        return garageRepository.findById(id)
+                .orElseThrow(() -> new NotFoundModelException("No existe un taller con id " + id));
     }
 }
