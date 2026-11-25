@@ -48,22 +48,14 @@ public class GarageServiceImpl implements GarageServiceI {
         }
 
         Garage garage = new Garage();
-        garage.setName(request.name());
-        garage.setNit(request.nit());
-        garage.setPhone(request.phone());
-        garage.setEmail(request.email());
-        garage.setAddress(request.address());
-        garage.setCity(request.city());
-        garage.setLatitude(request.latitude());
-        garage.setLongitude(request.longitude());
-        garage.setPhotoUrl(request.photoUrl());
-        garage.setTypeVehicle(request.typeVehicle());
-        garage.setGarageStatus(request.garageStatus());
+
+        applyData(garage, request);
 
         Garage saved = garageRepository.save(garage);
 
         List<ScheduleDTO> schedule = scheduleService.replace(saved.getId(), request.schedule());
-        List<ServiceResponseDTO> services = garageServicesService.replace(saved.getId(), new WorkshopServicesRequestDTO(request.services()));
+        List<ServiceResponseDTO> services = garageServicesService.replace(
+                saved.getId(), new WorkshopServicesRequestDTO(request.services()));
 
         return WorkshopResponseDTO.from(saved, schedule, services);
     }
