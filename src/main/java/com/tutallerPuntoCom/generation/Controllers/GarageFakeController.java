@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/garages")
+@RequestMapping("/api/workshops")
 public class GarageFakeController {
 
     private final GarageFakeService garageFakeService;

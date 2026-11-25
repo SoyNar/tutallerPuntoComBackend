@@ -157,5 +157,97 @@
       { "id": 19, "daysOfWeek": "VIERNES", "openAt": "08:30", "closesAt": "18:30" },
       { "id": 20, "daysOfWeek": "SABADO", "openAt": "09:00", "closesAt": "13:00" }
     ]
+  },
+  {
+    "id": 8,
+    "name": "Mecánica del MAno",
+    "nit": "900777756-7",
+    "phone": "3007777777",
+    "email": "mecanicasur@tutaller.com",
+    "address": "Cra 43A #8-35, El Poblado",
+    "city": "Medellín",
+    "latitude": 6.2088,
+    "longitude": -75.5681,
+    "photoUrl": "img/talleres/taller7.jpg",
+    "typeVehicle": "MOTO",
+    "garageStatus": "ACTIVO",
+    "services": [
+      { "id": 11, "name": "Instalación de accesorios", "categoryServices": "EQUIPAMENTO_VEHICULO", "price": 120000, "active": true },
+      { "id": 12, "name": "Polarizado de vidrios", "categoryServices": "EQUIPAMENTO_VEHICULO", "price": 200000, "active": false }
+    ],
+    "schedules": [
+      { "id": 18, "daysOfWeek": "LUNES", "openAt": "08:30", "closesAt": "18:30" },
+      { "id": 19, "daysOfWeek": "VIERNES", "openAt": "08:30", "closesAt": "18:30" },
+      { "id": 20, "daysOfWeek": "SABADO", "openAt": "09:00", "closesAt": "13:00" }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Dietetico",
+    "nit": "900777797-7",
+    "phone": "3007777777",
+    "email": "mecanicasur@tutaller.com",
+    "address": "Cra 43A #8-35, El Poblado",
+    "city": "Medellín",
+    "latitude": 6.2088,
+    "longitude": -75.5681,
+    "photoUrl": "img/talleres/taller7.jpg",
+    "typeVehicle": "MOTO",
+    "garageStatus": "ACTIVO",
+    "services": [
+      { "id": 11, "name": "Instalación de accesorios", "categoryServices": "EQUIPAMENTO_VEHICULO", "price": 120000, "active": true },
+      { "id": 12, "name": "Polarizado de vidrios", "categoryServices": "EQUIPAMENTO_VEHICULO", "price": 200000, "active": false }
+    ],
+    "schedules": [
+      { "id": 18, "daysOfWeek": "LUNES", "openAt": "08:30", "closesAt": "18:30" },
+      { "id": 19, "daysOfWeek": "VIERNES", "openAt": "08:30", "closesAt": "18:30" },
+      { "id": 20, "daysOfWeek": "SABADO", "openAt": "09:00", "closesAt": "13:00" }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "MAgali taller",
+    "nit": "900777497-7",
+    "phone": "3007777777",
+    "email": "mecanicasur@tutaller.com",
+    "address": "Cra 43A #8-35, El Poblado",
+    "city": "Medellín",
+    "latitude": 6.2088,
+    "longitude": -75.5681,
+    "photoUrl": "img/talleres/taller7.jpg",
+    "typeVehicle": "MOTO",
+    "garageStatus": "ACTIVO",
+    "services": [
+      { "id": 11, "name": "Instalación de accesorios", "categoryServices": "EQUIPAMENTO_VEHICULO", "price": 120000, "active": true },
+      { "id": 12, "name": "Polarizado de vidrios", "categoryServices": "EQUIPAMENTO_VEHICULO", "price": 200000, "active": false }
+    ],
+    "schedules": [
+      { "id": 18, "daysOfWeek": "LUNES", "openAt": "08:30", "closesAt": "18:30" },
+      { "id": 19, "daysOfWeek": "VIERNES", "openAt": "08:30", "closesAt": "18:30" },
+      { "id": 20, "daysOfWeek": "SABADO", "openAt": "09:00", "closesAt": "13:00" }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Gregor taller",
+    "nit": "908777797-7",
+    "phone": "3007777777",
+    "email": "mecanicasur@tutaller.com",
+    "address": "Cra 43A #8-35, El Poblado",
+    "city": "Medellín",
+    "latitude": 6.2088,
+    "longitude": -75.5681,
+    "photoUrl": "img/talleres/taller7.jpg",
+    "typeVehicle": "MOTO",
+    "garageStatus": "ACTIVO",
+    "services": [
+      { "id": 11, "name": "Instalación de accesorios", "categoryServices": "EQUIPAMENTO_VEHICULO", "price": 120000, "active": true },
+      { "id": 12, "name": "Polarizado de vidrios", "categoryServices": "EQUIPAMENTO_VEHICULO", "price": 200000, "active": false }
+    ],
+    "schedules": [
+      { "id": 18, "daysOfWeek": "LUNES", "openAt": "08:30", "closesAt": "18:30" },
+      { "id": 19, "daysOfWeek": "VIERNES", "openAt": "08:30", "closesAt": "18:30" },
+      { "id": 20, "daysOfWeek": "SABADO", "openAt": "09:00", "closesAt": "13:00" }
+    ]
   }
 ]
