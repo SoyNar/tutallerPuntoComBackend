@@ -16,6 +16,9 @@ public interface GarageRepository extends JpaRepository<Garage, Long> {
     // Validar si ya existe el correo ingresado
     boolean existsByEmail (String email);
 
+    // Validar que no exista el correo con otro taller relacionado
+    boolean existsByEmailAndIdNot(String email, Long id);
+
     // Consultas para el filtro
     @Query("""
             SELECT g FROM Garage g
