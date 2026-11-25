@@ -84,13 +84,7 @@ public class GarageServiceImpl implements GarageServiceI {
     @Override
     @Transactional(readOnly = true)
     public WorkshopResponseDTO findById(Long id) {
-        Garage garage = garageRepository.findById(id)
-                .orElseThrow(() -> new NotFoundModelException("No existe un taller con id " + id));
-
-        return WorkshopResponseDTO.from(
-                garage,
-                scheduleService.findByGarage(id),
-                garageServicesService.findByGarage(id));
+        return toResponse(findGarage(id));
     }
 
     @Override
