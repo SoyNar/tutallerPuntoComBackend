@@ -62,7 +62,7 @@ public class GarageServiceImpl implements GarageServiceI {
         Garage saved = garageRepository.save(garage);
 
         List<ScheduleDTO> schedule = scheduleService.replace(saved.getId(), request.schedule());
-        List<ServiceResponseDTO> services = garageServicesService.replace(saved.getId(), new WorkshopServicesRequestDTO(request,services()));
+        List<ServiceResponseDTO> services = garageServicesService.replace(saved.getId(), new WorkshopServicesRequestDTO(request.services()));
 
         return WorkshopResponseDTO.from(saved, schedule, services);
     }
