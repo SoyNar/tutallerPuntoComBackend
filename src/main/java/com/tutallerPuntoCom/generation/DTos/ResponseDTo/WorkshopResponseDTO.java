@@ -1,10 +1,12 @@
 package com.tutallerPuntoCom.generation.DTos.ResponseDTo;
 
+import com.tutallerPuntoCom.generation.DTos.RequestDTO.ScheduleDTO;
 import com.tutallerPuntoCom.generation.Models.Garage;
 import com.tutallerPuntoCom.generation.Utils.Enums.GarageStatus;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 public record WorkshopResponseDTO(
         Long id,
@@ -19,9 +21,11 @@ public record WorkshopResponseDTO(
         String photoUrl,
         TypeVehicle typeVehicle,
         GarageStatus garageStatus,
-        Instant createdAt
+        Instant createdAt,
+        List<ScheduleDTO> schedule,
+        List<ServiceResponseDTO> services
 ) {
-    public static WorkshopResponseDTO from(Garage g) {
+    public static WorkshopResponseDTO from(Garage g, List<ScheduleDTO> schedule, List<ServiceResponseDTO> services) {
         return new WorkshopResponseDTO(
                 g.getId(),
                 g.getName(),
@@ -35,7 +39,9 @@ public record WorkshopResponseDTO(
                 g.getPhotoUrl(),
                 g.getTypeVehicle(),
                 g.getGarageStatus(),
-                g.getCreatedAt()
+                g.getCreatedAt(),
+                schedule,
+                services
         );
     }
 }
