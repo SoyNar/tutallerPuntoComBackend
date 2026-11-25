@@ -8,7 +8,9 @@ import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsExce
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import com.tutallerPuntoCom.generation.Models.Garage;
 import com.tutallerPuntoCom.generation.Repositories.GarageRepository;
+import com.tutallerPuntoCom.generation.Services.Contracts.GarageScheduleServiceI;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceI;
+import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceSI;
 import com.tutallerPuntoCom.generation.Utils.Enums.GarageStatus;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import org.springframework.data.domain.Page;
@@ -20,10 +22,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class GarageServiceImpl implements GarageServiceI {
 
     private final GarageRepository garageRepository;
+    private final GarageScheduleServiceI scheduleService;
+    private final GarageServiceSI garageServicesService;
 
     // Constructor
-    public GarageServiceImpl(GarageRepository garageRepository) {
+    public GarageServiceImpl(GarageRepository garageRepository, GarageScheduleServiceI scheduleService,
+                             GarageServiceSI garageServicesService) {
         this.garageRepository = garageRepository;
+        this.scheduleService = scheduleService;
+        this.garageServicesService = garageServicesService;
     }
 
     // Crea un nuevo taller en la BD
