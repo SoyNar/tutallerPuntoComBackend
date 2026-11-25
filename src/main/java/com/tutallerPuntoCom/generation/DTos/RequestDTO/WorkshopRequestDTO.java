@@ -35,7 +35,7 @@ public record WorkshopRequestDTO(
 
         @NotNull(message = "La longitud es obligatoria")
         @DecimalMin(value = "-75.72", message = "La ubicación debe estar dentro del Valle de Aburrá")
-        @DecimalMax(value = "-75.72", message = "La ubicación debe estar dentro del Valle de Aburrá")
+        @DecimalMax(value = "-75.42", message = "La ubicación debe estar dentro del Valle de Aburrá")
         BigDecimal longitude,
 
         String photoUrl,
