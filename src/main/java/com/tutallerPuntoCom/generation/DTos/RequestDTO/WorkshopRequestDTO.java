@@ -29,13 +29,13 @@ public record WorkshopRequestDTO(
         String city,
 
         @NotNull(message = "La latitud es obligatoria")
-        @DecimalMin(value = "-90.0", message = "La latitud debe estar entre -90 y 90")
-        @DecimalMax(value = "90.0", message = "La latitud debe estar entre -90 y 90")
+        @DecimalMin(value = "6.08", message = "La ubicación debe estar dentro del Valle de Aburrá")
+        @DecimalMax(value = "6.45", message = "La ubicación debe estar dentro del Valle de Aburrá")
         BigDecimal latitude,
 
         @NotNull(message = "La longitud es obligatoria")
-        @DecimalMin(value = "-180.0", message = "La longitud debe estar entre -180 y 180")
-        @DecimalMax(value = "180.0", message = "La longitud debe estar entre -180 y 180")
+        @DecimalMin(value = "-75.72", message = "La ubicación debe estar dentro del Valle de Aburrá")
+        @DecimalMax(value = "-75.72", message = "La ubicación debe estar dentro del Valle de Aburrá")
         BigDecimal longitude,
 
         String photoUrl,
