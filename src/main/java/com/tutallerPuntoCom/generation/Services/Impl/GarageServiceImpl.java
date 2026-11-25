@@ -1,7 +1,10 @@
 package com.tutallerPuntoCom.generation.Services.Impl;
 
+import com.tutallerPuntoCom.generation.DTos.RequestDTO.ScheduleDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopRequestDTO;
+import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopServicesRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
+import com.tutallerPuntoCom.generation.DTos.ResponseDTo.ServiceResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopSummaryDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsException;
@@ -17,6 +20,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class GarageServiceImpl implements GarageServiceI {
@@ -35,6 +40,7 @@ public class GarageServiceImpl implements GarageServiceI {
 
     // Crea un nuevo taller en la BD
     @Override
+    @Transactional
     public WorkshopResponseDTO create(WorkshopRequestDTO request){
         if (garageRepository.existsByEmail(request.email())){
             throw new EmailAlreadyExistsException("Ya existe un taller registrado con ese correo");
@@ -51,9 +57,14 @@ public class GarageServiceImpl implements GarageServiceI {
         garage.setLongitude(request.longitude());
         garage.setPhotoUrl(request.photoUrl());
         garage.setTypeVehicle(request.typeVehicle());
+        garage.setGarageStatus(request.garageStatus());
 
         Garage saved = garageRepository.save(garage);
-        return WorkshopResponseDTO.from(saved);
+
+        List<ScheduleDTO> schedule = scheduleService.replace(saved.getId(), request.schedule());
+        List<ServiceResponseDTO> services = garageServicesService.replace(saved.getId(), new WorkshopServicesRequestDTO(request,services()));
+
+        return WorkshopResponseDTO.from(saved, schedule, services);
     }
 
 
