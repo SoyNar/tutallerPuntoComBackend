@@ -10,6 +10,7 @@ import com.tutallerPuntoCom.generation.Security.AuthUser;
 import com.tutallerPuntoCom.generation.Services.Contracts.AppointmentServiceI;
 import com.tutallerPuntoCom.generation.Utils.Enums.AppointmentStatus;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class AppointmentController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PageResponseDTO<AppointmentResponseDTO>> findMyAppointments(@AuthenticationPrincipal AuthUser user,
                                                                                       @RequestParam(name = "estado", required = false) AppointmentStatus status,
-                                                                                      Pageable pageable) {
+                                                                                      @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(appointmentService.findMyAppointments(user.id(), status, pageable));
     }
 
@@ -92,7 +93,7 @@ public class AppointmentController {
     public ResponseEntity<PageResponseDTO<AppointmentResponseDTO>> findAll(@RequestParam(name = "taller", required = false) Long garageId,
                                                                            @RequestParam(name = "fecha", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                                                            @RequestParam(name = "estado", required = false) AppointmentStatus status,
-                                                                           Pageable pageable) {
+                                                                           @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(appointmentService.findAll(garageId, date, status, pageable));
     }
 }
