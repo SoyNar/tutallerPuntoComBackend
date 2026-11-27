@@ -103,7 +103,7 @@ public class AppointmentServiceImpl implements AppointmentServiceI {
         appointment.setHour(request.hour());
 
         Appointment saved = appointmentRepository.save(appointment);
-        notify(saved, "Tu cita fue agendada", "appointment-scheduled");
+        notify(saved, "Tu cita fue agendada", "appointment-confirmed");
         return AppointmentResponseDTO.from(saved);
     }
 
