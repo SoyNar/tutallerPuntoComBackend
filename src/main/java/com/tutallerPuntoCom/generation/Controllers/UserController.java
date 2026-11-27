@@ -1,6 +1,7 @@
 package com.tutallerPuntoCom.generation.Controllers;
 
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
+import com.tutallerPuntoCom.generation.DTos.ResponseDTo.UserProfileResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.UserResponseDTO;
 import com.tutallerPuntoCom.generation.Security.AuthUser;
 import com.tutallerPuntoCom.generation.Services.Contracts.UserServiceI;
@@ -35,9 +36,9 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponseDTO> getMe(@AuthenticationPrincipal AuthUser authUser)
+    public ResponseEntity<UserProfileResponseDTO> getMe(@AuthenticationPrincipal AuthUser authUser)
     {
-        UserResponseDTO responseDTO = this.userServiceI.findById(authUser.id());
+        UserProfileResponseDTO  responseDTO = this.userServiceI.findById(authUser.id());
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 }

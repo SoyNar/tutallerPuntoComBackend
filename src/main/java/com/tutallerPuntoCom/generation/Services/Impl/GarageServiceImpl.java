@@ -4,10 +4,7 @@ import com.tutallerPuntoCom.generation.DTos.RequestDTO.ScheduleDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopServicesRequestDTO;
 import com.tutallerPuntoCom.generation.DTos.RequestDTO.WorkshopStatusRequestDTO;
-import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
-import com.tutallerPuntoCom.generation.DTos.ResponseDTo.ServiceResponseDTO;
-import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopResponseDTO;
-import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopSummaryDTO;
+import com.tutallerPuntoCom.generation.DTos.ResponseDTo.*;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import com.tutallerPuntoCom.generation.Models.Garage;
@@ -100,13 +97,12 @@ public class GarageServiceImpl implements GarageServiceI {
                 : scheduleRepository.findByGarageIdIn(ids).stream()
                 .collect(Collectors.groupingBy(s -> s.getGarage().getId()));
 
-        Map<Long, List<String>> servicesByGarage = ids.isEmpty()
+        Map<Long, List<ServiceSummaryResponseDTO>> servicesByGarage = ids.isEmpty()
                 ? Map.of()
                 : garageServiceRepository.findActiveByGarageIds(ids).stream()
                 .collect(Collectors.groupingBy(
                         gs -> gs.getGarage().getId(),
-                        Collectors.mapping(gs -> gs.getOfferService().getName(),
-                                Collectors.toList())));
+                        Collectors.mapping(ServiceSummaryResponseDTO::from, Collectors.toList())));
 
         LocalDateTime now = LocalDateTime.now(ZONE);
 

@@ -13,10 +13,13 @@ import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceI;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceSI;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -51,7 +54,7 @@ public class WorkshopController {
             @RequestParam(name = "ciudad", required = false) String city,
             @RequestParam(name = "servicio", required = false) Long serviceId,
             @RequestParam(name = "tipoVehiculo", required = false) TypeVehicle vehicleType,
-            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
         return ResponseEntity.ok(garageService.findAll(city, serviceId, vehicleType, pageable));
     }
@@ -71,24 +74,27 @@ public class WorkshopController {
         return ResponseEntity.ok(garageServicesService.findByGarage(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public ResponseEntity<WorkshopResponseDTO> create(@Valid @RequestBody WorkshopRequestDTO request) {
         WorkshopResponseDTO response = garageService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<WorkshopResponseDTO> update(@PathVariable Long id,
                                                       @Valid @RequestBody WorkshopRequestDTO request) {
         return ResponseEntity.ok(garageService.update(id, request));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/{id}/schedule")
     public ResponseEntity<List<ScheduleDTO>> replaceSchedule(@PathVariable Long id,
                                                              @RequestBody List<ScheduleDTO> schedules) {
         return ResponseEntity.ok(scheduleService.replace(id, schedules));
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/{id}/services")
     public ResponseEntity<List<ServiceResponseDTO>> replaceServices(
             @PathVariable Long id,
@@ -96,12 +102,14 @@ public class WorkshopController {
         return ResponseEntity.ok(garageServicesService.replace(id, request));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<WorkshopResponseDTO> changeStatus(@PathVariable Long id,
                                                             @Valid @RequestBody WorkshopStatusRequestDTO request) {
         return ResponseEntity.ok(garageService.changeStatus(id, request));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         garageService.delete(id);
