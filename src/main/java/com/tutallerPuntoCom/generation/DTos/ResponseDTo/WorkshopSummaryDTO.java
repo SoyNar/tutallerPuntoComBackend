@@ -14,9 +14,9 @@ public record WorkshopSummaryDTO(
         String photoUrl,
         TypeVehicle typeVehicle,
         boolean openNow,
-        List<String> services
+        List<ServiceSummaryResponseDTO> services
 ) {
-    public static WorkshopSummaryDTO from(Garage g, boolean openNow, List<String> services) {
+    public static WorkshopSummaryDTO from(Garage g, boolean openNow, List<ServiceSummaryResponseDTO> services) {
         return new WorkshopSummaryDTO(
                 g.getId(),
                 g.getName(),
