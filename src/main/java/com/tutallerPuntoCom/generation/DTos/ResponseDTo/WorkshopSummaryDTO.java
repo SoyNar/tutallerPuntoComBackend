@@ -4,29 +4,28 @@ import com.tutallerPuntoCom.generation.Models.Garage;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record WorkshopSummaryDTO(
         Long id,
         String name,
         String city,
         String address,
-        String phone,
-        BigDecimal latitude,
-        BigDecimal longitude,
         String photoUrl,
-        TypeVehicle typeVehicle
-){
-    public static WorkshopSummaryDTO from(Garage g){
+        TypeVehicle typeVehicle,
+        boolean openNow,
+        List<String> services
+) {
+    public static WorkshopSummaryDTO from(Garage g, boolean openNow, List<String> services) {
         return new WorkshopSummaryDTO(
                 g.getId(),
                 g.getName(),
                 g.getCity(),
                 g.getAddress(),
-                g.getPhone(),
-                g.getLatitude(),
-                g.getLongitude(),
                 g.getPhotoUrl(),
-                g.getTypeVehicle()
+                g.getTypeVehicle(),
+                openNow,
+                services
         );
     }
 }
