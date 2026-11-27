@@ -11,50 +11,62 @@ import com.tutallerPuntoCom.generation.DTos.ResponseDTo.WorkshopSummaryDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.EmailAlreadyExistsException;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import com.tutallerPuntoCom.generation.Models.Garage;
+import com.tutallerPuntoCom.generation.Models.GarageSchedule;
 import com.tutallerPuntoCom.generation.Repositories.GarageRepository;
+import com.tutallerPuntoCom.generation.Repositories.GarageScheduleRepository;
+import com.tutallerPuntoCom.generation.Repositories.GarageServiceRepository;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageScheduleServiceI;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceI;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceSI;
+import com.tutallerPuntoCom.generation.Utils.Enums.DAYS;
 import com.tutallerPuntoCom.generation.Utils.Enums.GarageStatus;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class GarageServiceImpl implements GarageServiceI {
 
-    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("id", "name", "city", "createdAt");
+    private static final ZoneId ZONE = ZoneId.of("America/Bogota");
+
     private final GarageRepository garageRepository;
+    private final GarageScheduleRepository scheduleRepository;
+    private final GarageServiceRepository garageServiceRepository;
     private final GarageScheduleServiceI scheduleService;
     private final GarageServiceSI garageServicesService;
 
-    // Constructor
-    public GarageServiceImpl(GarageRepository garageRepository, GarageScheduleServiceI scheduleService,
+    public GarageServiceImpl(GarageRepository garageRepository,
+                             GarageScheduleRepository scheduleRepository,
+                             GarageServiceRepository garageServiceRepository,
+                             GarageScheduleServiceI scheduleService,
                              GarageServiceSI garageServicesService) {
         this.garageRepository = garageRepository;
+        this.scheduleRepository = scheduleRepository;
+        this.garageServiceRepository = garageServiceRepository;
         this.scheduleService = scheduleService;
         this.garageServicesService = garageServicesService;
     }
 
+
     // Crea un nuevo taller en la BD
     @Override
     @Transactional
-    public WorkshopResponseDTO create(WorkshopRequestDTO request){
-        if (garageRepository.existsByEmail(request.email())){
+    public WorkshopResponseDTO create(WorkshopRequestDTO request) {
+        if (garageRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException("Ya existe un taller registrado con ese correo");
         }
 
         Garage garage = new Garage();
-
         applyData(garage, request);
-
         Garage saved = garageRepository.save(garage);
 
         List<ScheduleDTO> schedule = scheduleService.replace(saved.getId(), request.schedule());
@@ -73,24 +85,35 @@ public class GarageServiceImpl implements GarageServiceI {
             String city,
             Long serviceId,
             TypeVehicle vehicleType,
-            Pageable pageable) {
-
+            Pageable pageable)
+    {
         String cleanCity = (city == null || city.isBlank()) ? null : city.trim();
 
-        List<Sort.Order> validOrders = pageable.getSort().stream()
-                .filter(order -> ALLOWED_SORT_FIELDS.contains(order.getProperty()))
-                .toList();
-
-        Sort safeSort = validOrders.isEmpty()
-                ? Sort.by(Sort.Direction.ASC, "id")
-                : Sort.by(validOrders);
-
-        Pageable safePageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), safeSort);
-
         Page<Garage> page = garageRepository.search(
-                GarageStatus.ACTIVO, cleanCity, vehicleType, serviceId, safePageable);
+                GarageStatus.ACTIVO, cleanCity, vehicleType, serviceId, pageable);
 
-        return PageResponseDTO.from(page.map(WorkshopSummaryDTO::from));
+        // Dos consultas extra para toda la pagina: horarios y servicios
+        List<Long> ids = page.getContent().stream().map(Garage::getId).toList();
+
+        Map<Long, List<GarageSchedule>> schedulesByGarage = ids.isEmpty()
+                ? Map.of()
+                : scheduleRepository.findByGarageIdIn(ids).stream()
+                .collect(Collectors.groupingBy(s -> s.getGarage().getId()));
+
+        Map<Long, List<String>> servicesByGarage = ids.isEmpty()
+                ? Map.of()
+                : garageServiceRepository.findActiveByGarageIds(ids).stream()
+                .collect(Collectors.groupingBy(
+                        gs -> gs.getGarage().getId(),
+                        Collectors.mapping(gs -> gs.getOfferService().getName(),
+                                Collectors.toList())));
+
+        LocalDateTime now = LocalDateTime.now(ZONE);
+
+        return PageResponseDTO.from(page.map(garage -> WorkshopSummaryDTO.from(
+                garage,
+                isOpenAt(schedulesByGarage.getOrDefault(garage.getId(), List.of()), now),
+                servicesByGarage.getOrDefault(garage.getId(), List.of()))));
     }
 
     // Busca y valida si existe un taller segun su id
@@ -168,5 +191,14 @@ public class GarageServiceImpl implements GarageServiceI {
                 garage,
                 scheduleService.findByGarage(garage.getId()),
                 garageServicesService.findByGarage(garage.getId()));
+    }
+
+    private boolean isOpenAt(List<GarageSchedule> schedules, LocalDateTime now) {
+        DAYS today = DAYS.values()[now.getDayOfWeek().getValue() - 1];
+        LocalTime time = now.toLocalTime();
+        return schedules.stream().anyMatch(s ->
+                s.getDaysOfWeek() == today
+                        && !time.isBefore(s.getOpenAt())
+                        && time.isBefore(s.getClosesAt()));
     }
 }
