@@ -13,7 +13,9 @@ import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceI;
 import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceSI;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +53,7 @@ public class WorkshopController {
             @RequestParam(name = "ciudad", required = false) String city,
             @RequestParam(name = "servicio", required = false) Long serviceId,
             @RequestParam(name = "tipoVehiculo", required = false) TypeVehicle vehicleType,
-            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
         return ResponseEntity.ok(garageService.findAll(city, serviceId, vehicleType, pageable));
     }

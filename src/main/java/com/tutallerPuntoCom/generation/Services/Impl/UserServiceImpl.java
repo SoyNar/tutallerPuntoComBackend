@@ -1,6 +1,7 @@
 package com.tutallerPuntoCom.generation.Services.Impl;
 
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.PageResponseDTO;
+import com.tutallerPuntoCom.generation.DTos.ResponseDTo.UserProfileResponseDTO;
 import com.tutallerPuntoCom.generation.DTos.ResponseDTo.UserResponseDTO;
 import com.tutallerPuntoCom.generation.Exceptions.Customs.NotFoundModelException;
 import com.tutallerPuntoCom.generation.Models.User;
@@ -22,19 +23,17 @@ public class UserServiceImpl implements UserServiceI {
         this.userRepo = userRepo;
     }
 
-    @Transactional(readOnly = true)
     @Override
+    @Transactional(readOnly = true)
     public PageResponseDTO<UserResponseDTO> all(Pageable pageable) {
-        Page<UserResponseDTO> page = userRepo.findAll(pageable)
-                .map(UserResponseDTO::from);
-
-        return PageResponseDTO.from(page);
+        Page<User> page = userRepo.findAllBy(pageable);
+        return PageResponseDTO.from(page.map(UserResponseDTO::from));
     }
 
     @Override
-    public UserResponseDTO findById(Long id) {
-        User user = userRepo.findById(id).orElseThrow(() -> new NotFoundModelException("Usuario no encontrado con id " + id));
+    public UserProfileResponseDTO findById(Long id) {
+        User user = userRepo.findWithVehiclesById(id).orElseThrow(() -> new NotFoundModelException("Usuario no encontrado con id " + id));
 
-        return UserResponseDTO.from(user);
+        return UserProfileResponseDTO.from(user);
     }
 }

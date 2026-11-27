@@ -18,15 +18,19 @@ import com.tutallerPuntoCom.generation.Services.Contracts.GarageServiceSI;
 import com.tutallerPuntoCom.generation.Utils.Enums.GarageStatus;
 import com.tutallerPuntoCom.generation.Utils.Enums.TypeVehicle;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class GarageServiceImpl implements GarageServiceI {
 
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("id", "name", "city", "createdAt");
     private final GarageRepository garageRepository;
     private final GarageScheduleServiceI scheduleService;
     private final GarageServiceSI garageServicesService;
@@ -71,11 +75,20 @@ public class GarageServiceImpl implements GarageServiceI {
             TypeVehicle vehicleType,
             Pageable pageable) {
 
-        // Convierte dato a null para que el filtro lo ignore y limpia espacios en blanco
         String cleanCity = (city == null || city.isBlank()) ? null : city.trim();
 
+        List<Sort.Order> validOrders = pageable.getSort().stream()
+                .filter(order -> ALLOWED_SORT_FIELDS.contains(order.getProperty()))
+                .toList();
+
+        Sort safeSort = validOrders.isEmpty()
+                ? Sort.by(Sort.Direction.ASC, "id")
+                : Sort.by(validOrders);
+
+        Pageable safePageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), safeSort);
+
         Page<Garage> page = garageRepository.search(
-                GarageStatus.ACTIVO, cleanCity, vehicleType, serviceId, pageable);
+                GarageStatus.ACTIVO, cleanCity, vehicleType, serviceId, safePageable);
 
         return PageResponseDTO.from(page.map(WorkshopSummaryDTO::from));
     }
